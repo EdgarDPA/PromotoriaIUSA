@@ -1,0 +1,143 @@
+<template>
+<div class="col-lg-12">
+    <div class="card-box">
+        <h4 class="text-dark  header-title m-t-0 m-b-30"><i class="fa fa-file-text-o" aria-hidden="true"></i> Seguimiento de Ordenes de Compra</h4>
+        <div class="loader" v-if="BanderaAxios"></div>
+        <table class="table table-sm ">
+            <thead class="thead-dark">
+                <tr>
+                    <th>FOLIO</th>
+                    <th>FECHA</th>
+                    <th>OPORTUNIDAD</th>
+                    <th>DISTRIBUIDOR</th>
+                    <th>ORDEN DE COMPRA</th>
+                    <th>ESTATUS</th>
+                    <th colspan="3">OPCIONES</th>
+                    <!-- <th></th>
+                    <th></th> -->
+                </tr>
+            </thead>
+            <tbody v-for="orden in orders" :key="orden.id" class="table-striped">
+                <tr>
+                    <td>{{orden.folio}}</td>
+                    <td>{{orden.fecha}} - {{orden.hora}}</td>
+                    <td>{{orden.nombreUsuario}}</td>
+                    <td>{{orden.nombreDistribuidor}}</td>
+                    <td>{{orden.orden_compra}}</td>
+                    <td>
+                        
+                            <strong class="text-warning"  v-if="orden.estatus == 'Pendiente'">{{orden.estatus}}</strong>
+                        
+                    </td>
+                    <td class="text-center" data-toggle="tooltip" data-placement="left" title="Detalle"><a class="btn btn-primary waves-effect" data-toggle="modal" data-target="#exampleModal" @click="detalleOrden(orden)"><i class="fa fa-search" style="color:#fff;font-size:18px;"></i></a></td>
+                    
+                </tr>
+            </tbody>
+        </table>
+    </div>
+            
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel"><i class="fa fa-search" style="font-size:18px;"></i> Folio: {{nombre}}</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-sm">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>CODIGO</th>
+                            <th>NOMBRE</th>
+                            <th>UNIDADES</th>
+                        </tr>
+                    </thead>
+                    <tbody v-for="ordenDeta in ordenDetalle" :key="ordenDeta.id">
+                        <tr>
+                            <td>{{ordenDeta.codigo_material}}</td>
+                            <td>{{ordenDeta.nombre_material}}</td>
+                            <td>{{ordenDeta.unidades_confirmadas}}</td>                                    
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>  
+</template>
+<style>
+    td {
+        padding: 15px;
+        text-align: left;
+        font-size: 14px;
+    }
+    th{
+        padding: 15px;
+        text-align: center;
+        font-size: 10px;
+    }
+    tr:hover {background-color: #f5f5f5;}
+</style>
+<script>
+    import Vue from 'vue'    
+    import axios from 'axios'  
+
+
+    export default {
+        data(){
+            return{                
+                orders: [],
+                nombre: '',
+                ordenDetalle: [],
+                BanderaAxios: false
+            }  
+        },
+        mounted() {
+            this.cargarOrdenes()
+        },
+        methods: {            
+            cargarOrdenes (){
+                let me=this;
+                me.BanderaAxios = true;            
+                axios.post('./obtenerOC',{
+                    id: '1',
+                })
+                .then(function (response) {
+                    // handle success             
+                    me.BanderaAxios = false;                  
+                    me.orders = response.data;                   
+                })
+                .catch(function (error) {
+                    // handle error
+                    me.BanderaAxios = false;
+                    console.log(error);              
+                });
+            },
+            detalleOrden (lista){
+                let me=this;
+                me.nombre= lista.folio;
+                me.ordenDetalle = []; 
+                me.BanderaAxios = true;            
+                axios.post('./obtenerDetalleOC',{
+                    id: lista.id,
+                })
+                .then(function (response) {
+                    // handle success             
+                    me.BanderaAxios = false;                
+                    me.ordenDetalle = response.data                   
+                })
+                .catch(function (error) {
+                    // handle error
+                    me.BanderaAxios = false;
+                    console.log(error);              
+                });
+            }
+        }
+    }
+</script>
