@@ -1,5 +1,5 @@
 <template>
-
+<div>
 <div class="card-box">
     <h3 class="text-dark  header-title m-t-0 m-b-20">Seleccionar Tipo de Usuario a Orden de Compra</h3>
     <div class="form-row align-items-center">         
@@ -18,7 +18,7 @@
     </div>
     <div v-show ="tipo_orden == 'Prospecto'">
         <h4 class="text-dark  header-title m-t-0 m-b-20"><span class="fa fa-user"></span> Prospecto a Orden de Compra</h4>
-        <prospecto-list-component @DealerValue="id_Usuario = $event"></prospecto-list-component>
+        <prospecto-list-component @DealerValue="obtenerDistribuidor($event)"></prospecto-list-component>
     </div>
 <br>
 <div v-show ="tipo_orden">
@@ -36,9 +36,14 @@
                 <input type="text" class="form-control mb-2" id="inlineFormInput2" v-model="unidades" placeholder="Unidades">
                 </div>
                 <div class="col-auto">
-                    <button class="btn btn-success mb-2" @click.prevent="buscarMaterial()">
+                    <button class="btn btn-success mb-2" @click.prevent="buscarMaterialCarrito()">
                         <i class="fa fa-cart-plus" aria-hidden="true"></i> AGREGAR
                     </button>                
+                </div>
+                <div class="col-auto">
+                     <button type="button" class="btn btn-primary justify-content-center shadow-box font-size-standard"
+                      data-toggle="modal" data-target="#myModal" @click="CatalogoGeneral()"> Catálogo de productos
+                    </button>               
                 </div>
             </div>
         </form>
@@ -110,8 +115,90 @@
             </button>
         </div>
     </div>
-    
-</div>    
+</div>
+    <!-- Modal -->
+      <div class="modal fade" id="myModal" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header" id="catalogo_inicio">
+              <button type="button" class="close" data-dismiss="modal" style="color: #fff;">&times;</button>
+              <h4 class="modal-title text-dark1"><span class="glyphicon glyphicon-plus-sign"></span> <i
+                  class="ti-book icon"></i> &nbsp;Catálogo de productos</h4>
+            </div>
+            <div class="modal-body">
+              <!--MENU GENERAL -->
+              <div class="col-md-12">
+                <div class="table-responsive " v-if="bandera_tabla == 0">
+                  <table class="table mb-0 table-hover">
+                    <thead>
+                      <tr colspan="2">
+                        <th class="text-dark1">
+                          <center>Familia</center>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th class="text-dark1">Buscar: <input type="text" class="form-control" v-model="buscarFamilia"
+                            placeholder="Buscar Familia"></th>
+                      </tr>
+
+                    </thead>
+                    <tbody v-if="listaCatalogo.length != 0">
+                      <tr v-for="(listaCatalogo, index) in filteredCatalogo" :key="index">
+                        <td><a  @click="catalogoGPOM41(listaCatalogo)">{{listaCatalogo.LABEL}}</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+       
+                </div>
+                <!--MENU GENERAL -->
+                <!--MENU Grupo material 4 -->
+                <div class="table-responsive" v-if="bandera_tabla == 1">
+                  <table class="table mb-0 table-hover">
+                    <thead>
+                      <tr>
+                        <th>
+                          <button class="btn-primary" @click="regresarTabla()">Regresar</button>
+                        </th>
+                        <th class="text-dark1" colspan="2">GPO.MAT.4: {{gpo4.LABEL}}</th>
+
+                      </tr>
+                      <tr>
+                        <th class="text-dark1" colspan="2">
+                          <center> MATERIALES</center>
+                        </th>
+                      <tr>
+                        <th></th>
+                        <th class="text-dark1">Buscar: <input type="text" class="form-control" v-model="buscarMaterial"
+                            placeholder="Buscar Familia"></th>
+                      </tr>
+                      </tr>
+                      <tr>
+                        <th class="text-dark1">ID</th>
+                        <th class="text-dark1">NOMBRE</th>
+
+                      </tr>
+                    </thead>
+                    <tbody v-if="listaCatalogo.length != 0">
+                      <tr v-for="(listaCatalogo, index) in filteredCatalogoG4" :key="index">
+                        <td data-dismiss="modal" ><a @click="catalogoGPOM41_Se(listaCatalogo)">{{listaCatalogo.ID}}</a></td>
+                        <td data-dismiss="modal" ><a @click="catalogoGPOM41_Se(listaCatalogo)">{{listaCatalogo.LABEL}}</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="modal-footer" style="background-color: #ecf0f5;">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"> <span
+                    class="glyphicon glyphicon-remove"></span> Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+</div> 
            
 </template>
 
@@ -131,11 +218,32 @@
                 id_Usuario: '',
                 listaCarrito: [],
                 tipo_orden: null,
-                Bandera_Distribuidor_precargado: false                
+                Bandera_Distribuidor_precargado: false,
+                bandera_tabla:0,
+                listaCatalogo:[],
+                buscarFamilia:'',
+                buscarMaterial:'',
+                gpo4:[]              
             }  
         },
         mounted() {
             console.log('OrderComponent')
+        },
+        computed: {
+            filteredCatalogo: function () {
+                var self = this;
+                return this.listaCatalogo.filter(function (person) {
+                    return person.LABEL.toLowerCase().indexOf(self.buscarFamilia.toLowerCase()) >= 0
+                    || person.ID.toLowerCase().indexOf(self.buscarFamilia.toLowerCase()) >= 0;
+                });
+            },
+            filteredCatalogoG4: function () {
+                var self = this;
+                return this.listaCatalogo.filter(function (person) {
+                    return person.LABEL.toLowerCase().indexOf(self.buscarMaterial.toLowerCase()) >= 0
+                    || person.ID.toLowerCase().indexOf(self.buscarMaterial.toLowerCase()) >= 0;
+                });
+            }
         },
         methods: {
             obtenerDistribuidor(data){
@@ -154,7 +262,7 @@
                 }
                 me.id_Usuario = data
             },
-             buscarMaterial(){
+             buscarMaterialCarrito(){
                let me=this;
                let dato=[];
                me.bandera_repetido = 0;
@@ -298,6 +406,61 @@
                         me.listaCarrito[i] = lista;
                     }
                 }
+            },
+            CatalogoGeneral(){
+               let me=this;
+                me.bandera_tabla=0;
+                
+                me.buscarFamilia='';
+                me.buscarMaterial='';
+                me.gpo4=[]; 
+
+                me.BanderaAxios = true;
+                axios.post('./obtenerCatalogoPGC',{
+                    gpom4: ''
+                })
+                .then(function (response) {
+                    // handle success
+                    console.log(response.data);
+                    me.BanderaAxios = false;
+                    me.listaCatalogo = response.data;  
+                    me.listaCatalogo.pop();
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                    me.BanderaAxios = false;
+                });
+
+            },
+            regresarTabla(){
+            me.bandera_tabla=0;
+            },
+            catalogoGPOM41(lista){
+                let me=this;
+                me.bandera_tabla=1;
+                me.gpo4=lista;
+
+                me.BanderaAxios = true;
+                axios.post('./obtenerCatalogoPGC',{
+                    gpom4: me.gpo4.ID
+                })
+                .then(function (response) {
+                    // handle success
+                    console.log(response.data);
+                    me.BanderaAxios = false;
+                    me.listaCatalogo = response.data;  
+                    me.listaCatalogo.pop();
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                    me.BanderaAxios = false;
+                });
+            },
+            catalogoGPOM41_Se(lista){
+                let me= this;
+                me.codigo = lista.ID
             }
         }
     }

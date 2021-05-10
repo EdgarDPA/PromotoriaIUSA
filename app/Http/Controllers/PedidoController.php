@@ -630,4 +630,58 @@ class PedidoController extends Controller
         $prospectos
           );
     }
+
+    //*************************CATALOGO DE PRODUCTOS ****************
+
+public function CatalogoProductos(Request $request)
+{
+  function obj2array($obj) {
+    $out = array();
+    foreach ($obj as $key => $val) {
+      switch(true) {
+          case is_object($val):
+            $out[$key] = obj2array($val);
+            break;
+        case is_array($val):
+            $out[$key] = obj2array($val);
+            break;
+        default:
+          $out[$key] = $val;
+      }
+    }
+    return $out;
+  }//fin funcion obj2arra
+$GPOM4 = $request->gpom4;
+
+//********* WEBSERVICE PARA HISTORIAL COMPRA CLIENTES
+  try {
+
+        //$servicio="http://172.16.176.25/WebServices/PGC360_Des_Catalogo/Catalogo.asmx?WSDL"; //url del servicio
+        $servicio="http://172.16.171.10/WebServices/PGC360_Pro_Catalogo/Catalogo.asmx?WSDL"; //url del servicio
+        $parametros=array(); //parametros de la llamada
+
+        $parametros['P_GPO4']="$GPOM4";
+        
+
+
+        $client = new SoapClient($servicio,array('cache_wsdl' => WSDL_CACHE_NONE,'trace' => TRUE));
+
+        $result = $client->Vb_Catalogo($parametros);//llamamos al métdo que nos interesa con los parámetros
+        //convertir result a array
+        
+
+        $result = obj2array($result);
+        $noticias=$result['Vb_CatalogoResult']['MyResultData'];
+        $Catalogo = collect($noticias);
+       
+
+        } catch (Exception $e) {
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        } 
+
+      return response()->json(
+            $Catalogo
+            );      
+
+}//FIN METODO
 }

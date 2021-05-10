@@ -53,4 +53,6 @@ Route::post('obtenerDetalleOC', 'OrderManagementController@obtenerDetalleOrden')
 
 Route::post('obtenerProspectosPGC', 'PedidoController@obtenerProspectosPGC');
 
+Route::post('obtenerCatalogoPGC', 'PedidoController@CatalogoProductos');
+
 });

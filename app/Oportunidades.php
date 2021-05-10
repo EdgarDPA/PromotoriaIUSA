@@ -31,6 +31,7 @@ class Oportunidades extends Model
         'nom_corredor_industrial',
         'numero_local',
         'id_zona',
+        'bandera_prospecto',
         'id_promotor'
     ];
 }
