@@ -6,9 +6,10 @@
         <table class="table table-sm ">
             <thead class="thead-dark">
                 <tr>
-                    <th>FOLIO</th>
+                    <th>FOLIO</th>                    
                     <th>FECHA</th>
-                    <th>OPORTUNIDAD</th>
+                    <th>TIPO</th>
+                    <th>NOMBRE</th>
                     <th>DISTRIBUIDOR</th>
                     <th>ORDEN DE COMPRA</th>
                     <th>ESTATUS</th>
@@ -19,17 +20,20 @@
             </thead>
             <tbody v-for="orden in orders" :key="orden.id" class="table-striped">
                 <tr>
-                    <td>{{orden.folio}}</td>
+                    <td>{{orden.folio}}</td>                    
                     <td>{{orden.fecha}} - {{orden.hora}}</td>
+                    <td>
+                        <strong class="text-success"  v-if="orden.tipoUsuario == 1">Oportunidad</strong>
+                        <strong class="text-warning"  v-if="orden.tipoUsuario == 2">Prospecto</strong>
+                    </td>
                     <td>{{orden.nombreUsuario}}</td>
                     <td>{{orden.nombreDistribuidor}}</td>
                     <td>{{orden.orden_compra}}</td>
-                    <td>
-                        
-                            <strong class="text-warning"  v-if="orden.estatus == 'Pendiente'">{{orden.estatus}}</strong>
-                        
+                    <td>                        
+                            <strong class="text-warning"  v-if="orden.estatus == 'Pendiente'">{{orden.estatus}}</strong>  
                     </td>
                     <td class="text-center" data-toggle="tooltip" data-placement="left" title="Detalle"><a class="btn btn-primary waves-effect" data-toggle="modal" data-target="#exampleModal" @click="detalleOrden(orden)"><i class="fa fa-search" style="color:#fff;font-size:18px;"></i></a></td>
+                     <td class="text-center" data-toggle="tooltip" data-placement="left" title="Enviar"><a class="btn btn-success waves-effect" @click="detalleOrden(orden)"><i class="fa fa-paper-plane" style="color:#fff;font-size:18px;"></i></a></td>
                     
                 </tr>
             </tbody>
@@ -64,7 +68,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
             </div>
         </div>

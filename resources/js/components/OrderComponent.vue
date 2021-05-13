@@ -18,8 +18,9 @@
     </div>
     <div v-show ="tipo_orden == 'Prospecto'">
         <h4 class="text-dark  header-title m-t-0 m-b-20"><span class="fa fa-user"></span> Prospecto a Orden de Compra</h4>
-        <prospecto-list-component @DealerValue="obtenerDistribuidor($event)"></prospecto-list-component>
+        <prospecto-list-component @DealerValue="obtenerDistribuidorProspecto($event)"></prospecto-list-component>
     </div>
+
 <br>
 <div v-show ="tipo_orden">
 <h4 class="text-dark  header-title m-t-0 m-b-20"><span class="fa fa-plus-circle"></span> Agregar Producto</h4>    
@@ -218,7 +219,7 @@
                 listaCatalogo:[],
                 buscarFamilia:'',
                 buscarMaterial:'',
-                gpo4:[]              
+                gpo4:[]           
             }  
         },
         mounted() {
@@ -245,7 +246,8 @@
                 console.log(data.idDistribuidor);
                 let me=this;
                 me.Bandera_Distribuidor_precargado = false;
-                 me.id_distribuidor={};
+                me.id_distribuidor={};
+                me.id_Usuario = {};
                 if(data.idDistribuidor != null || data.idDistribuidor){
                     console.log(data.idDistribuidor);
                     me.id_distribuidor = {
@@ -256,6 +258,25 @@
                     me.Bandera_Distribuidor_precargado = true;
                 }
                 me.id_Usuario = data
+            },
+            obtenerDistribuidorProspecto(data){
+                console.log(data.idDistribuidor);
+                let me=this;
+                me.Bandera_Distribuidor_precargado = false;
+                me.id_distribuidor={};
+                me.id_Usuario= {};
+                if(data.idDistribuidor != null || data.idDistribuidor){
+                    console.log(data.idDistribuidor);
+                    me.id_distribuidor = {
+                        KUNNR:data.idDistribuidor,
+                        NAME1:data.nombreDistribuidor
+                    }
+                    console.log(me.id_distribuidor);
+                    me.Bandera_Distribuidor_precargado = true;
+                }
+                me.id_Usuario = data
+                me.id_Usuario.id = data.id
+                me.id_Usuario.Nombre = data.nombre
             },
              buscarMaterialCarrito(){
                let me=this;
