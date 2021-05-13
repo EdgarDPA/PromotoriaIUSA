@@ -45,6 +45,8 @@ Route::post('guardarOportunidad', 'PedidoController@guardarOportunidades');
 
 Route::post('obtenerOportunidades', 'OpportunityController@obtenerOportunidades');
 
+Route::post('obtenerOportunidadesLista', 'OpportunityController@obtenerOportunidadesOrden');
+
 Route::get('seguimientoOrden', 'OrderManagementController@index');
 
 Route::post('obtenerOC', 'OrderManagementController@obtenerOrden');
@@ -54,5 +56,7 @@ Route::post('obtenerDetalleOC', 'OrderManagementController@obtenerDetalleOrden')
 Route::post('obtenerProspectosPGC', 'PedidoController@obtenerProspectosPGC');
 
 Route::post('obtenerCatalogoPGC', 'PedidoController@CatalogoProductos');
+
+Route::post('guardarNuevoProspecto', 'OpportunityController@nuevoProspecto');
 
 });

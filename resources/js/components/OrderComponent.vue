@@ -157,33 +157,28 @@
                 <div class="table-responsive" v-if="bandera_tabla == 1">
                   <table class="table mb-0 table-hover">
                     <thead>
-                      <tr>
-                        <th>
-                          <button class="btn-primary" @click="regresarTabla()">Regresar</button>
-                        </th>
-                        <th class="text-dark1" colspan="2">GPO.MAT.4: {{gpo4.LABEL}}</th>
-
-                      </tr>
-                      <tr>
-                        <th class="text-dark1" colspan="2">
-                          <center> MATERIALES</center>
-                        </th>
-                      <tr>
-                        <th></th>
-                        <th class="text-dark1">Buscar: <input type="text" class="form-control" v-model="buscarMaterial"
-                            placeholder="Buscar Familia"></th>
-                      </tr>
-                      </tr>
-                      <tr>
-                        <th class="text-dark1">ID</th>
-                        <th class="text-dark1">NOMBRE</th>
-
-                      </tr>
+                        <tr>
+                            <th class="text-dark1" colspan="2">GPO.MAT.4: {{gpo4.LABEL}}</th>
+                        </tr>
+                        <tr>
+                            <th>
+                            <button class="btn-primary" @click="regresarTablaCatalogo()">Regresar</button>
+                            </th>                      
+                        </tr>
+                        <tr>
+                            <th class="text-dark1">Buscar: <input type="text" class="form-control" v-model="buscarMaterial"
+                                placeholder="Buscar Familia">
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-dark1" colspan="2">
+                            <center> MATERIALES</center>
+                            </th>
+                        </tr>
                     </thead>
                     <tbody v-if="listaCatalogo.length != 0">
                       <tr v-for="(listaCatalogo, index) in filteredCatalogoG4" :key="index">
-                        <td data-dismiss="modal" ><a @click="catalogoGPOM41_Se(listaCatalogo)">{{listaCatalogo.ID}}</a></td>
-                        <td data-dismiss="modal" ><a @click="catalogoGPOM41_Se(listaCatalogo)">{{listaCatalogo.LABEL}}</a></td>
+                        <td data-dismiss="modal" ><a @click="catalogoGPOM41_Se(listaCatalogo)">{{listaCatalogo.ID}} -  {{listaCatalogo.LABEL}}</a></td>
                       </tr>
                     </tbody>
                   </table>
@@ -322,6 +317,7 @@
                     idDistribuidor: me.id_distribuidor.KUNNR,
                     nombreDistribuidor: me.id_distribuidor.NAME1,
                     orden_compra: me.orden_compra,
+                    tipo_orden: me.tipo_orden,
                     lista: me.listaCarrito
                 })
                 .then(function (response) {
@@ -331,6 +327,7 @@
                     me.id_Usuario = null;
                     me.id_distribuidor = '';
                     me.orden_compra = '';
+                    me.tipo_orden = null;
                    // alert("Se a guardado la orden de compra")                    
                     swal("Generación Exitosa!", "Se a guardado la orden de compra", "success");                   
                 })
@@ -409,12 +406,10 @@
             },
             CatalogoGeneral(){
                let me=this;
-                me.bandera_tabla=0;
-                
+                me.bandera_tabla=0;                
                 me.buscarFamilia='';
                 me.buscarMaterial='';
                 me.gpo4=[]; 
-
                 me.BanderaAxios = true;
                 axios.post('./obtenerCatalogoPGC',{
                     gpom4: ''
@@ -433,14 +428,14 @@
                 });
 
             },
-            regresarTabla(){
-            me.bandera_tabla=0;
+            regresarTablaCatalogo(){
+            this.bandera_tabla=0;
+            this.CatalogoGeneral();
             },
             catalogoGPOM41(lista){
                 let me=this;
                 me.bandera_tabla=1;
                 me.gpo4=lista;
-
                 me.BanderaAxios = true;
                 axios.post('./obtenerCatalogoPGC',{
                     gpom4: me.gpo4.ID

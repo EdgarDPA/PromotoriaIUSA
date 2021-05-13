@@ -10,6 +10,8 @@ use App\Orden_Compra_Detalle;
 
 use App\Oportunidades;
 
+use App\Prospecto;
+
 use SoapClient;
 
 use DB;
@@ -503,6 +505,12 @@ class PedidoController extends Controller
 
     public function guardarOrden(Request $request){
         //dd($request);
+        $tipo_orden = 0;
+        if($request->tipo_orden == 'Oportunidad'){
+          $tipo_orden = 1;
+        }else if($request->tipo_orden == 'Prospecto'){
+          $tipo_orden = 2;
+        }
         //Obtener Folio del Promotor
         $promotor_id = 3;
         $oportunidades = OrdenCompra::where('id_promotor',$promotor_id)->get();
@@ -516,6 +524,7 @@ class PedidoController extends Controller
 
         $nueva_orden_compra = new OrdenCompra();
         $nueva_orden_compra->folio = $Folio;
+        $nueva_orden_compra->tipoUsuario = $tipo_orden;
         $nueva_orden_compra->idUsuario = $request->idUsuario;
         $nueva_orden_compra->nombreUsuario = $request->nombreUsuario;
         $nueva_orden_compra->idDistribuidor = $request->idDistribuidor;
@@ -625,7 +634,8 @@ class PedidoController extends Controller
     
     public function obtenerProspectosPGC(Request $request){
       //Datos para Georeferencia del Cliente
-      $prospectos = DB::connection('PGC360_DES')->select("SELECT * FROM prospecto ORDER BY id DESC");
+      //$prospectos = DB::connection('PGC360_DES')->select("SELECT * FROM prospecto ORDER BY id DESC");
+      $prospectos = Prospecto::where('id_promotor',3)->get();
       return response()->json(
         $prospectos
           );

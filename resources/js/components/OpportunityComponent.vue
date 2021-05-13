@@ -3,6 +3,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12" v-if="!bandera_convertir">
                 <div class="card-box">
+                    <div class="loader" v-if="BanderaAxios"></div>
                     <h4 class="text-dark  header-title m-t-0 m-b-30">Directorio Estadístico Nacional de Unidades Económicas</h4>
                     <table class="table table-sm">
                         <thead class="thead-dark">
@@ -19,9 +20,9 @@
                                 <td>{{opportunity.Nombre}}</td>
                                 <td>{{opportunity.Ubicacion}}</td>
                                 <td class="text-center" data-toggle="tooltip" data-placement="left" title="Mapa"><a class="btn btn-danger waves-effect" data-toggle="modal" data-target="#exampleModal" @click="GMaps(opportunity.Latitud, opportunity.Longitud, opportunity.Nombre, opportunity.Ubicacion)"><i class="fa fa-map-marker" style="color:#fff;font-size:18px;"></i></a></td>
-                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Encuesta"><a href="encuesta" class="btn btn-success waves-effect"><i class="fa fa-check-circle"></i></a></td>
-                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Archivos"><a href="files_upload" class="btn btn-primary waves-effect"><i class="fa fa-file-import"></i></a></td>
-                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Convertir Prospecto"><a class="btn btn-primary waves-effect" @click="obtenerFormulario(opportunity)"><i class="fa fa-hand-peace-o" style="color:#fff;font-size:18px;"></i></a></td>
+                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Encuesta" v-if="opportunity.bandera_prospecto != 1"><a href="encuesta" class="btn btn-success waves-effect"><i class="fa fa-check-circle"></i></a></td>
+                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Convertir Prospecto" v-if="opportunity.bandera_prospecto != 1"><a class="btn btn-warning waves-effect" @click="obtenerFormulario(opportunity)"><i class="fa fa-hand-peace-o" style="color:#fff;font-size:18px;"></i></a></td>
+                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Archivos" v-if="opportunity.bandera_prospecto != 1"><a href="files_upload" class="btn btn-primary waves-effect"><i class="fa fa-file-import"></i></a></td>                                
                             </tr>
                         </tbody>
                     </table>
@@ -34,9 +35,12 @@
                 <encuesta-prospecto-component 
                 :preNombre="oportunidadSelect.Nombre"
                 :preUbicacion="oportunidadSelect.Ubicacion"
-                :preId="oportunidadSelect.Nombre"
-                :preLatitud="oportunidadSelect.Nombre"
-                :preLongitud="oportunidadSelect.Nombre">
+                :preId="oportunidadSelect.id"
+                :preIdDistribuidor="oportunidadSelect.idDistribuidor"
+                :preNombreDistribuidor="oportunidadSelect.nombreDistribuidor"
+                :preLatitud="oportunidadSelect.Latitud"
+                :preLongitud="oportunidadSelect.Longitud"
+                @Volver="volverFormulario()">
                 </encuesta-prospecto-component>
                 </div>
             </div>
@@ -102,7 +106,8 @@
                 center: { lat: 19.4243408, lng: -99.1774841 },
                 opportunities: [],
                 bandera_convertir: false,
-                oportunidadSelect:[]
+                oportunidadSelect:[],
+                BanderaAxios : false
             }  
         },
         mounted() {
@@ -118,17 +123,17 @@
             },
             cargarOportunidad (){
                 let me=this;
-                
+                me.BanderaAxios = true;
                 axios.post('./obtenerOportunidades',{
                     id: '1',
                 })
                 .then(function (response) {
                     // handle success             
-                    console.log(response);                  
+                 me.BanderaAxios = false;                 
                 me.opportunities = response.data                   
                 })
                 .catch(function (error) {
-                    // handle error
+                    me.BanderaAxios = false;
                     console.log(error);              
                 });
             },
@@ -140,6 +145,7 @@
             volverFormulario(){
                  let me= this;
                 me.bandera_convertir=false;
+                me.cargarOportunidad()
             }
         }
     }

@@ -10,6 +10,7 @@ class OrdenCompra extends Model
 
     protected $fillable = [
         'folio',
+        'tipoUsuario',
         'idUsuario',
         'nombreUsuario',
         'idDistribuidor',

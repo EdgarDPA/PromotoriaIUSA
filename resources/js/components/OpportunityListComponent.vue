@@ -37,7 +37,7 @@
       cargarDistribuidor (){
           let me=this;
          
-          axios.post('./obtenerOportunidades',{
+          axios.post('./obtenerOportunidadesLista',{
               id: '1',
           })
           .then(function (response) {

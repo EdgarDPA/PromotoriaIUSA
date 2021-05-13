@@ -10,11 +10,12 @@
           </div>
           <br>
           <div class="col-lg-12">
-            <div class="col-md-12" v-show="alerta">
+           <div class="col-md-12" v-show="alerta">
               <div class="alert alert-warning">
-                <li v-bind="alerta"></li>
+                <li>{{alerta}}</li>
               </div>
             </div>
+            <div class="loader" v-if="BanderaAxios"></div>
             <div class="card-box">              
             <center><h4 class="header-title m-t-0">Datos principales</h4></center>
             <br>
@@ -128,54 +129,10 @@
           </div>
         </div>
         <br>
-        <!--<div class="row">
-          <div class="col-sm-6">
-            <center><h4 class="header-title m-t-0">Documentos Fisicos</h4></center>
-            <br>
-            <label>Recuerde recabar los siguientes documentos</label>
-            <br>
-              <label>Copia de RFC</label><br>
-              <input type="file" id="fileInput" file-model="archivos.rfc"><br> 
-              <label>Copia de Comprobante de Domicilio</label><br>
-              <input type="file" id="fileInput" file-model="archivos.domicilo"><br>
-              <label>Compra del formato R1</label><br>
-              <input type="file" id="fileInput" file-model="archivos.fr1"><br>
-              <label>Copia de acta constitutiva(Personas Morales)</label><br>
-              <input type="file" id="fileInput" file-model="archivos.acta">
-  
-          </div>
-
-          <div class="col-sm-6">
-            <center><h4 class="header-title m-t-0">Imagenes del negocio</h4></center>
-            <br>
-            <label>Recuerde recabar fotografias del negocio del prospecto</label>
-            <br>
-              <label>Foto 1</label><br>
-              <input type="file" id="fileInput" file-model="foto.foto1"><br> 
-              <label>Foto 2</label><br>
-              <input type="file" id="fileInput" file-model="foto.foto2"><br>
-              <label>Foto 3</label><br>
-              <input type="file" id="fileInput" file-model="foto.foto3"><br>
-              <label>Foto 4</label><br>
-              <input type="file" id="fileInput" file-model="foto.foto4">
-  
-          </div>
-
-        </div>-->
-        <!--<div class="row">
-          <div class="col-sm-6">
-            <center><h4 class="header-title m-t-0">GPS</h4></center>
-            <br>
-            <a href="" ng-click="actualizargps()" class="btn btn-primary">Obtener gps </a>
-          </div>
-          <div class="col-sm-6">
-           
-          </div>
-        </div>-->
         <div class="row">
           <div class="col-sm-12">
             <center>
-            <a href="" @click="enviarFormulario()" class="btn btn-primary">Guardar nuevo prospecto </a>
+            <button @click="enviarFormulario()" class="btn btn-primary">Guardar nuevo prospecto </button>
             </center>
           </div>
         </div>
@@ -188,23 +145,105 @@
         </div><!-- fin container-fluid-->
 </div>
 </template>
-<style>
-    .star{
-        cursor:pointer;
-    }
-</style>
 <script>
 
 export default {
   components: { },
-  props:['preNombre','preUbicacion'],
+  props:[
+    'preNombre',
+    'preUbicacion',
+    'preId',
+    'preIdDistribuidor',
+    'preNombreDistribuidor',
+    'preLatitud',
+    'preLongitud'],
   data: () => ({
-      nombre:this.preNombre,
-      contacto:this.preUbicacion
+      BanderaAxios: false,
+      rfc:'',
+      contacto:'',
+      telefono:'',
+      correo:'',
+      referencia:'',
+      antiguedad:'',
+      ramo:'',
+      mensualidad:'',
+      transporte:'',
+      mostrador: '',
+      notas:'',
+      alerta:''
   }),
   methods: {
+    validacionFormulario(){
+      let me=this;
+       me.alerta = '';
+      if( me.preId == null || me.preId == undefined || me.preId == ''){
+        me.alerta = "Falta uno o mas campos"
+      }else if( me.preNombre == null || me.preNombre == undefined || me.preNombre == ''){
+        me.alerta = "Falta uno o mas campos"
+      }else if( me.rfc == null || me.rfc == undefined || me.rfc == ''){
+        me.alerta = "Falta uno o mas campos"
+      }else if(me.contacto == null ||me.contacto == undefined ||me.contacto == ''){
+        me.alerta = "Falta uno o mas campos"
+      }else if(me.preUbicacion == null ||me.preUbicacion == undefined ||me.preUbicacion == ''){
+        me.alerta = "Falta uno o mas campos"
+      }else if(me.telefono == null ||me.telefono == undefined ||me.telefono == ''){
+        me.alerta = "Falta uno o mas campos"
+      }else if(me.correo == null ||me.correo == undefined ||me.correo == ''){
+        me.alerta = "Falta uno o mas campos"
+      }else if(me.referencia == null ||me.referencia == undefined ||me.referencia == ''){
+        me.alerta = "Falta uno o mas campos"
+      }else if(me.antiguedad == null ||me.antiguedad == undefined ||me.antiguedad == ''){
+        me.alerta = "Falta uno o mas campos"
+      }else if(me.ramo == null ||me.ramo == undefined ||me.ramo == ''){
+        me.alerta = "Falta uno o mas campos"
+      }else if(me.mensualidad == null ||me.mensualidad == undefined ||me.mensualidad == ''){
+        me.alerta = "Falta uno o mas campos"
+      }else if(me.transporte == null ||me.transporte == undefined ||me.transporte == ''){
+        me.alerta = "Falta uno o mas campos"
+      }else if(me.mostrador == null ||me.mostrador == undefined ||me.mostrador == ''){
+        me.alerta = "Falta uno o mas campos"
+      }else if(me.notas == null ||me.notas == undefined ||me.notas == ''){
+        me.alerta = "Falta uno o mas campos"
+      }else{
+        me.enviarFormulario()
+      }
+    },
       enviarFormulario(){
-        
+        let me=this;
+        me.BanderaAxios = true;
+        axios.post('./guardarNuevoProspecto',{
+            idOportunidad: me.preId,
+            idPromotor: '3',
+            nombre: me.preNombre,
+            rfc: me.rfc,
+            contacto: me.contacto,
+            direccion: me.preUbicacion,
+            telefono: me.telefono,
+            correo:me.correo,
+            referencia:me.referencia,
+            antiguedad:me.antiguedad,
+            ramo: me.ramo,
+            mensualidad:me.mensualidad,
+            transporte:me.transporte,
+            mostrador:me.mostrador,
+            notas:me.notas,
+            idDistribuidor: me.preIdDistribuidor,
+            nombreDistribuidor: me.preNombreDistribuidor,
+            lat: me.preLatitud,
+            lon: me.preLongitud
+        })
+        .then(function (response) {
+            // handle success
+            me.BanderaAxios = false;
+            // alert("Se a guardado la orden de compra")                    
+            swal("Registro Completado!", "Se a generado nuevo Prospecto", "success"); 
+            me.$emit('Volver','ok');                  
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+            me.BanderaAxios = false;
+        });
       }
   },
 }
