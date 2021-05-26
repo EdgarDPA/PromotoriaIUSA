@@ -1,16 +1,16 @@
 <template>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-12" v-if="!bandera_convertir">
+            <div class="col-md-12" v-if="!ocultar_tabla">
                 <div class="card-box">
                     <div class="loader" v-if="BanderaAxios"></div>
                     <h4 class="text-dark  header-title m-t-0 m-b-30">Directorio Estadístico Nacional de Unidades Económicas</h4>
-                    <table class="table table-sm">
+                    <table class="table">
                         <thead class="thead-dark">
                             <tr>
-                                <th>NOMBRE</th>
-                                <th>UBICACIÓN</th>
-                                <th colspan="4">OPCIONES</th>
+                                <th style="text-align:left;font-size:12px;">NOMBRE</th>
+                                <th style="text-align:left;font-size:12px;">UBICACIÓN</th>
+                                <th style="text-align:left;font-size:12px;" colspan="4">OPCIONES</th>
                                 <!-- <th></th>
                                 <th></th> -->
                             </tr>
@@ -20,7 +20,7 @@
                                 <td>{{opportunity.Nombre}}</td>
                                 <td>{{opportunity.Ubicacion}}</td>
                                 <td class="text-center" data-toggle="tooltip" data-placement="left" title="Mapa"><a class="btn btn-danger waves-effect" data-toggle="modal" data-target="#exampleModal" @click="GMaps(opportunity.Latitud, opportunity.Longitud, opportunity.Nombre, opportunity.Ubicacion)"><i class="fa fa-map-marker" style="color:#fff;font-size:18px;"></i></a></td>
-                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Encuesta" v-if="opportunity.bandera_prospecto != 1"><a href="encuesta" class="btn btn-success waves-effect"><i class="fa fa-check-circle"></i></a></td>
+                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Encuesta" v-if="opportunity.bandera_prospecto != 1"><a class="btn btn-success waves-effect" @click="obtenerEncuesta(opportunity)" ><i class="fa fa-check-circle" style="color:#fff;font-size:18px;"></i></a></td>
                                 <td class="text-center" data-toggle="tooltip" data-placement="left" title="Convertir Prospecto" v-if="opportunity.bandera_prospecto != 1"><a class="btn btn-warning waves-effect" @click="obtenerFormulario(opportunity)"><i class="fa fa-hand-peace-o" style="color:#fff;font-size:18px;"></i></a></td>
                                 <td class="text-center" data-toggle="tooltip" data-placement="left" title="Archivos" v-if="opportunity.bandera_prospecto != 1"><a href="files_upload" class="btn btn-primary waves-effect"><i class="fa fa-file-import"></i></a></td>                                
                             </tr>
@@ -31,7 +31,7 @@
            <div class="col-md-12" v-if="bandera_convertir"> 
                 <div class="card-box">                
                  <button type="button" class="btn btn-primary" @click="volverFormulario()">Volver a lista</button>
-                 
+                 <br>
                 <encuesta-prospecto-component 
                 :preNombre="oportunidadSelect.Nombre"
                 :preUbicacion="oportunidadSelect.Ubicacion"
@@ -42,6 +42,21 @@
                 :preLongitud="oportunidadSelect.Longitud"
                 @Volver="volverFormulario()">
                 </encuesta-prospecto-component>
+                </div>
+            </div>
+            <div class="col-md-12" v-if="bandera_encuesta"> 
+                <div class="card-box">
+                    <button type="button" class="btn btn-primary" @click="volverFormulario()">Volver a lista</button>
+                    <div class="row">  
+                        <div class="col-lg-12">                            
+                            <h4 class="text-dark  header-title m-t-0 m-b-30">ENCUESTA</h4>
+                            <div id="app">
+                                <encuesta-component 
+                                :idOportunidad="oportunidadSelect.id"
+                                @Volver="volverFormulario()"></encuesta-component>
+                            </div>                            
+                        </div>           
+                    </div>
                 </div>
             </div>
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -105,7 +120,9 @@
                 marker: {},
                 center: { lat: 19.4243408, lng: -99.1774841 },
                 opportunities: [],
+                ocultar_tabla: false,
                 bandera_convertir: false,
+                bandera_encuesta: false,
                 oportunidadSelect:[],
                 BanderaAxios : false
             }  
@@ -120,6 +137,21 @@
                 this.marker = { lat: parseFloat(Latitud), lng: parseFloat(Longitud) }
                 this.nombre = Nombre;
                 this.ubicacion = Ubicacion;
+            },
+            guardarOportunidad (){
+                let me=this;
+                me.BanderaAxios = true;
+                axios.post('./guardarOportunidad',{
+                    lista: me.opportunities,
+                })
+                .then(function (response) {
+                    // handle success             
+                 me.BanderaAxios = false;                                 
+                })
+                .catch(function (error) {
+                    me.BanderaAxios = false;
+                    console.log(error);              
+                });
             },
             cargarOportunidad (){
                 let me=this;
@@ -139,12 +171,21 @@
             },
             obtenerFormulario(datos){
                 let me= this;
+                me.ocultar_tabla=true;
                 me.bandera_convertir=true;
+                me.oportunidadSelect = datos
+            },
+            obtenerEncuesta(datos){
+                let me= this;
+                me.ocultar_tabla=true;
+                me.bandera_encuesta=true;
                 me.oportunidadSelect = datos
             },
             volverFormulario(){
                  let me= this;
+                 me.ocultar_tabla=false;
                 me.bandera_convertir=false;
+                me.bandera_encuesta=false;
                 me.cargarOportunidad()
             }
         }

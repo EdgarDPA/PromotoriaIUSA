@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Distribuidores;
+
+use App\Encuesta;
+
 class EncuestaController extends Controller
 {
     /**
@@ -35,7 +39,40 @@ class EncuestaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //dd($request);
+        //guardar distribuidores
+        $listaD = $request->distribuidores;
+        foreach($listaD as $infoLista){
+          $nuevo_distribuidor = new Distribuidores();
+        
+          $nuevo_distribuidor->nombre = $infoLista['nombre'];
+          $nuevo_distribuidor->idIusa = $infoLista['idIusa'];
+          $nuevo_distribuidor->tipo = $infoLista['tipo'];
+          $nuevo_distribuidor->direccion = $infoLista['direccion'];
+          $nuevo_distribuidor->telefono = $infoLista['telefono'];
+          $nuevo_distribuidor->correo = $infoLista['correo'];
+          $nuevo_distribuidor->cp = $infoLista['cp'];
+          $nuevo_distribuidor->calificacion = $infoLista['calificacion'];
+          $nuevo_distribuidor->id_oportunidad = $request->idOportunidad;
+          $nuevo_distribuidor->save();
+        }
+        //guardar encuesta
+        $nueva_encuesta= new Encuesta();
+
+        $nueva_encuesta->pregunta1 = $request->pregunta1;
+        $nueva_encuesta->pregunta2 = $request->pregunta2;
+        $nueva_encuesta->pregunta3 = $request->pregunta3;
+        $nueva_encuesta->pregunta4 = $request->pregunta4;
+        $nueva_encuesta->pregunta5 = $request->pregunta5;
+        $nueva_encuesta->pregunta6 = $request->pregunta6;
+        $nueva_encuesta->pregunta7 = $request->pregunta7;
+        $nueva_encuesta->pregunta8 = $request->pregunta8;
+        $nueva_encuesta->pregunta9 = $request->pregunta9;
+        $nueva_encuesta->pregunta10 = $request->pregunta10;
+        $nueva_encuesta->id_oportunidad = $request->idOportunidad;
+        $nueva_encuesta->save();
+
+        return 'guardado exitoso';
     }
 
     /**

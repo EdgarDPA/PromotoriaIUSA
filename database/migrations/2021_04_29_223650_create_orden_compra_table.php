@@ -15,6 +15,8 @@ class CreateOrdenCompraTable extends Migration
     {
         Schema::create('orden_compra', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('folio');
+            $table->string('tipoUsuario');
             $table->string('idUsuario');
             $table->string('nombreUsuario');
             $table->string('idDistribuidor')->nullable();
@@ -23,6 +25,7 @@ class CreateOrdenCompraTable extends Migration
             $table->string('estatus');
             $table->string('hora');
             $table->string('fecha');
+            $table->string('id_promotor');
             $table->timestamps();
         });
     }

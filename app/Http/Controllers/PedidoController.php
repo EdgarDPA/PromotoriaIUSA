@@ -12,6 +12,8 @@ use App\Oportunidades;
 
 use App\Prospecto;
 
+use App\Distribuidores;
+
 use SoapClient;
 
 use DB;
@@ -512,7 +514,7 @@ class PedidoController extends Controller
           $tipo_orden = 2;
         }
         //Obtener Folio del Promotor
-        $promotor_id = 3;
+        $promotor_id = 1;
         $oportunidades = OrdenCompra::where('id_promotor',$promotor_id)->get();
         $numero_oportunidad = count($oportunidades);
         $numero_oportunidad++;
@@ -527,6 +529,7 @@ class PedidoController extends Controller
         $nueva_orden_compra->tipoUsuario = $tipo_orden;
         $nueva_orden_compra->idUsuario = $request->idUsuario;
         $nueva_orden_compra->nombreUsuario = $request->nombreUsuario;
+        $nueva_orden_compra->tipoDistribuidor = $request->tipoDistribuidor;
         $nueva_orden_compra->idDistribuidor = $request->idDistribuidor;
         $nueva_orden_compra->nombreDistribuidor = $request->nombreDistribuidor;
         $nueva_orden_compra->orden_compra = $request->orden_compra;
@@ -602,7 +605,7 @@ class PedidoController extends Controller
         $lista = $request->lista;
         foreach($lista as $infoLista){
           $nueva_orden_compra_detalle = new Oportunidades();
-          $nueva_orden_compra_detalle->Id_INEGI = $infoLista['Id_INEGI'];
+          $nueva_orden_compra_detalle->Id_INEGI = $infoLista['Id'];
           $nueva_orden_compra_detalle->Nombre= $infoLista['Nombre'];
           $nueva_orden_compra_detalle->Razon_social= $infoLista['Razon_social'];
           $nueva_orden_compra_detalle->Clase_actividad= $infoLista['Clase_actividad'];
@@ -625,7 +628,7 @@ class PedidoController extends Controller
           $nueva_orden_compra_detalle->numero_local = $infoLista['numero_local'];
           $nueva_orden_compra_detalle->id_zona = 0;
 
-          $nueva_orden_compra_detalle->id_promotor = 3;
+          $nueva_orden_compra_detalle->id_promotor = 2;
           
           $nueva_orden_compra_detalle->save();
         }
@@ -635,7 +638,7 @@ class PedidoController extends Controller
     public function obtenerProspectosPGC(Request $request){
       //Datos para Georeferencia del Cliente
       //$prospectos = DB::connection('PGC360_DES')->select("SELECT * FROM prospecto ORDER BY id DESC");
-      $prospectos = Prospecto::where('id_promotor',3)->get();
+      $prospectos = Prospecto::where('id_promotor',1)->get();
       return response()->json(
         $prospectos
           );
@@ -694,4 +697,15 @@ $GPOM4 = $request->gpom4;
             );      
 
 }//FIN METODO
+
+
+public function buscarDistribuidores(Request $request)
+{
+  
+  $distribuidores =  Distribuidores::where('id_oportunidad',$request->id_oportunidad)->get();
+      return response()->json(
+        $distribuidores
+          );
+}
+
 }

@@ -15,19 +15,21 @@ class CreateTableProspecto extends Migration
     {
         Schema::create('prospecto', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('nombre');
-            $table->string('rfc');
-            $table->string('contacto');
-            $table->string('direccion');
-            $table->string('telefono');
-            $table->string('correo');
-            $table->string('referencia');
-            $table->string('antiguedad');
-            $table->string('ramo');
-            $table->string('mensualidad');
-            $table->string('transporte');
-            $table->string('mostrador');
-            $table->string('notas');
+            $table->string('nombre')->nullable();
+            $table->string('rfc')->nullable();
+            $table->string('contacto')->nullable();
+            $table->string('direccion')->nullable();
+            $table->string('telefono')->nullable();
+            $table->string('correo')->nullable();
+            $table->string('referencia')->nullable();
+            $table->string('antiguedad')->nullable();
+            $table->string('ramo')->nullable();
+            $table->string('mensualidad')->nullable();
+            $table->string('transporte')->nullable();
+            $table->string('mostrador')->nullable();
+            $table->string('notas')->nullable();
+            $table->string('idDistribuidor')->nullable();
+            $table->string('nombreDistribuidor')->nullable();
             $table->string('id_oportunidad')->nullable();
             $table->string('id_promotor')->nullable();
             $table->timestamps();

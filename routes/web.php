@@ -25,6 +25,8 @@ Route::get('opportunities', 'OpportunityController@index');
 
 Route::resource('encuesta', 'EncuestaController');
 
+Route::post('guardarEncuesta', 'EncuestaController@store');
+
 Route::get('files_upload', 'FilesController@index');
 
 Route::get('upload_csv', 'FileController@index');
@@ -59,4 +61,9 @@ Route::post('obtenerCatalogoPGC', 'PedidoController@CatalogoProductos');
 
 Route::post('guardarNuevoProspecto', 'OpportunityController@nuevoProspecto');
 
+Route::post('buscarDistribuidores', 'PedidoController@buscarDistribuidores');
+
+Route::post('cargarCorreoDistribuidor', 'OrderManagementController@obtenerInfoDistribuidor');
+
+Route::post('enviarDetalleOC', 'OrderManagementController@envioOrdenEmail');
 });

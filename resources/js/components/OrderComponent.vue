@@ -96,7 +96,11 @@
             <dealer-component @DealerValue="id_distribuidor = $event"></dealer-component>
         </div>
         <div class="col-lg-12" style="margin-bottom:10px;" v-if="Bandera_Distribuidor_precargado == true">
-            <h4 class="text-dark  header-title m-t-0 m-b-20">Distribuidor = {{id_distribuidor.KUNNR}} - {{id_distribuidor.NAME1}}</h4>
+            <h4 class="text-dark  header-title m-t-0 m-b-20"><span class="fa fa-user-plus"></span>Seleccionar Distribuidor</h4>
+            <div class="col-auto" v-for="(listaDistribuidores, index) in listaDistribuidores" :key="index">
+                <input type="radio" id="Oportunidad" :value="listaDistribuidores" v-model="distri_select" >
+                <label for="Oportunidad"><strong>{{listaDistribuidores.idIusa}} - {{listaDistribuidores.nombre}}</strong></label>                
+            </div>
         </div>
     </div>
 
@@ -213,6 +217,8 @@
                 orden_compra: '',
                 id_Usuario: '',
                 listaCarrito: [],
+                listaDistribuidores: [],
+                distri_select: '',
                 tipo_orden: null,
                 Bandera_Distribuidor_precargado: false,
                 bandera_tabla:0,
@@ -248,16 +254,25 @@
                 me.Bandera_Distribuidor_precargado = false;
                 me.id_distribuidor={};
                 me.id_Usuario = {};
-                if(data.idDistribuidor != null || data.idDistribuidor){
-                    console.log(data.idDistribuidor);
-                    me.id_distribuidor = {
-                        KUNNR:data.idDistribuidor,
-                        NAME1:data.nombreDistribuidor
-                    }
-                    console.log(me.id_distribuidor);
-                    me.Bandera_Distribuidor_precargado = true;
-                }
-                me.id_Usuario = data
+
+                me.BanderaAxios = true;
+                    axios.post('./buscarDistribuidores',{
+                        id_oportunidad:data.id,
+                    })
+                    .then(function (response) {
+                        // handle success
+                        me.BanderaAxios = false;
+                        me.listaDistribuidores = response.data                    
+                        if(me.listaDistribuidores.length != 0){                    
+                           me.Bandera_Distribuidor_precargado = true;
+                        } 
+                        me.id_Usuario = data  
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                        me.BanderaAxios = false;
+                    });
             },
             obtenerDistribuidorProspecto(data){
                 console.log(data.idDistribuidor);
@@ -265,18 +280,27 @@
                 me.Bandera_Distribuidor_precargado = false;
                 me.id_distribuidor={};
                 me.id_Usuario= {};
-                if(data.idDistribuidor != null || data.idDistribuidor){
-                    console.log(data.idDistribuidor);
-                    me.id_distribuidor = {
-                        KUNNR:data.idDistribuidor,
-                        NAME1:data.nombreDistribuidor
-                    }
-                    console.log(me.id_distribuidor);
-                    me.Bandera_Distribuidor_precargado = true;
-                }
-                me.id_Usuario = data
-                me.id_Usuario.id = data.id
-                me.id_Usuario.Nombre = data.nombre
+                 me.BanderaAxios = true;
+                    axios.post('./buscarDistribuidores',{
+                        id_oportunidad:data.id_oportunidad,
+                    })
+                    .then(function (response) {
+                        // handle success
+                        me.BanderaAxios = false;
+                        me.listaDistribuidores = response.data                    
+                        if(me.listaDistribuidores.length != 0){                    
+                           me.Bandera_Distribuidor_precargado = true;
+                        } 
+                        me.id_Usuario = data  
+                        me.id_Usuario.id = data.id
+                        me.id_Usuario.Nombre = data.nombre
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                        me.BanderaAxios = false;
+                    });
+                
             },
              buscarMaterialCarrito(){
                let me=this;
@@ -313,8 +337,7 @@
                             me.listaCarrito.push(response.data.cadena_result)
                             me.codigo = null;
                             me.unidades = null;
-                        }
-                        
+                        }   
                     })
                     .catch(function (error) {
                         // handle error
@@ -331,10 +354,14 @@
             },
             guardarOrden (){
                 let me=this;
+                if (me.Bandera_Distribuidor_precargado == false){
+                    me.id_distribuidor.tipo = 'IUSA';
+                }
                 me.BanderaAxios = true;
                 axios.post('./guardarOC',{
                     idUsuario: me.id_Usuario.id,
                     nombreUsuario: me.id_Usuario.Nombre,
+                    tipoDistribuidor: me.id_distribuidor.tipo,
                     idDistribuidor: me.id_distribuidor.KUNNR,
                     nombreDistribuidor: me.id_distribuidor.NAME1,
                     orden_compra: me.orden_compra,
@@ -478,6 +505,29 @@
                 let me= this;
                 me.codigo = lista.ID
             }
+        },
+        watch: {
+        distri_select: function(newRole)
+        {
+             let me=this;
+             me.id_distribuidor={};
+             if(me.distri_select.tipo == 'IUSA'){
+                me.id_distribuidor = {
+                    KUNNR:me.distri_select.idIusa,
+                    NAME1:me.distri_select.nombre,
+                    tipo:me.distri_select.tipo
+                }
+             }
+             if(me.distri_select.tipo == 'Otro'){
+                me.id_distribuidor = {
+                    KUNNR:me.distri_select.id,
+                    NAME1:me.distri_select.nombre,
+                    tipo:me.distri_select.tipo
+                }
+             }
+             
+            console.log(me.id_distribuidor);
+        }
         }
     }
 </script>

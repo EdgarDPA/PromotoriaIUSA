@@ -33,7 +33,7 @@
                             <strong class="text-warning"  v-if="orden.estatus == 'Pendiente'">{{orden.estatus}}</strong>  
                     </td>
                     <td class="text-center" data-toggle="tooltip" data-placement="left" title="Detalle"><a class="btn btn-primary waves-effect" data-toggle="modal" data-target="#exampleModal" @click="detalleOrden(orden)"><i class="fa fa-search" style="color:#fff;font-size:18px;"></i></a></td>
-                     <td class="text-center" data-toggle="tooltip" data-placement="left" title="Enviar"><a class="btn btn-success waves-effect" @click="detalleOrden(orden)"><i class="fa fa-paper-plane" style="color:#fff;font-size:18px;"></i></a></td>
+                     <td class="text-center" data-toggle="tooltip" data-placement="left" title="Enviar"><a class="btn btn-success waves-effect" data-toggle="modal" data-target="#envioOrden" @click="cargarDistribuidor(orden)"><i class="fa fa-paper-plane" style="color:#fff;font-size:18px;"></i></a></td>
                     
                 </tr>
             </tbody>
@@ -73,6 +73,28 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="envioOrden" tabindex="-1" role="dialog" aria-labelledby="envioOrdenLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="envioOrdenLabel">Enviar Orden por Email</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label>Correo electrónico</label>
+                <br>
+                <input type="text" class="form-control" v-model="emailEnvio">
+                <br>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @click="enviarOrden()">Enviar correo</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+            </div>
+        </div>
+    </div>
 </div>  
 </template>
 <style>
@@ -99,7 +121,9 @@
                 orders: [],
                 nombre: '',
                 ordenDetalle: [],
-                BanderaAxios: false
+                BanderaAxios: false,
+                emailEnvio:'',
+                idOrden:''
             }  
         },
         mounted() {
@@ -135,6 +159,46 @@
                     // handle success             
                     me.BanderaAxios = false;                
                     me.ordenDetalle = response.data                   
+                })
+                .catch(function (error) {
+                    // handle error
+                    me.BanderaAxios = false;
+                    console.log(error);              
+                });
+            },
+            cargarDistribuidor (lista){
+                console.log(lista);
+                let me=this;
+                me.emailEnvio = '';
+                me.idOrden = lista.id
+                me.BanderaAxios = true;            
+                axios.post('./cargarCorreoDistribuidor',{
+                    id: lista.idDistribuidor,
+                    tipo: lista.tipoDistribuidor,
+                })
+                .then(function (response) {
+                    // handle success             
+                    me.BanderaAxios = false;                
+                    me.emailEnvio = response.data;              
+                })
+                .catch(function (error) {
+                    // handle error
+                    me.BanderaAxios = false;
+                    console.log(error);              
+                });
+            },
+            enviarOrden (){
+                let me=this;
+                me.BanderaAxios = true;            
+                axios.post('./enviarDetalleOC',{
+                    id: me.idOrden,
+                    correo: me.emailEnvio
+                })
+                .then(function (response) {
+                    // handle success             
+                    me.BanderaAxios = false;   
+                    alert(response.data);            
+                    me.cargarOrdenes();               
                 })
                 .catch(function (error) {
                     // handle error

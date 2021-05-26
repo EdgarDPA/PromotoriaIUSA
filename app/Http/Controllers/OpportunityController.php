@@ -18,7 +18,7 @@ class OpportunityController extends Controller
     }
 
     public function obtenerOportunidades(Request $request){
-        $oportunidades = Oportunidades::where('id_promotor',3)->get();
+        $oportunidades = Oportunidades::where('id_promotor',1)->get();
         //dd($oportunidades);
         return response()->json(
             $oportunidades
@@ -26,7 +26,7 @@ class OpportunityController extends Controller
     }
 
     public function obtenerOportunidadesOrden(Request $request){
-        $oportunidades = Oportunidades::all()->where('id_promotor',3)->where('bandera_prospecto','!=',1); 
+        $oportunidades = Oportunidades::all()->where('id_promotor',1)->where('bandera_prospecto','!=',1); 
         $oportunidades_query = $oportunidades->values();
         $oportunidades_query->all();
         return response()->json(
@@ -56,7 +56,7 @@ class OpportunityController extends Controller
         //$nuevo_prospecto->lat = $request->lat;
         //$nuevo_prospecto->lon = $request->lon;
         $nuevo_prospecto->id_oportunidad = $request->idOportunidad;
-        $nuevo_prospecto->id_promotor = $request->idPromotor;
+        $nuevo_prospecto->id_promotor = 1;
         $nuevo_prospecto->save();
         
 

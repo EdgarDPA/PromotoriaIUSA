@@ -13,6 +13,7 @@ class OrdenCompra extends Model
         'tipoUsuario',
         'idUsuario',
         'nombreUsuario',
+        'tipoDistribuidor',
         'idDistribuidor',
         'nombreDistribuidor',
         'orden_compra',

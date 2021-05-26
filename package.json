@@ -32,6 +32,7 @@
         "vue-cal": "^3.10.0",
         "vue-fusioncharts": "^3.1.0",
         "vue-simple-suggest": "^1.10.3",
+        "vue-star-rating": "^1.7.0",
         "vue-suggestion": "^1.1.0",
         "vue2-dropzone": "^3.6.0",
         "vue2-google-maps": "^0.10.7"

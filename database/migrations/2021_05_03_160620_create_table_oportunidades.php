@@ -37,7 +37,8 @@ class CreateTableOportunidades extends Migration
             $table->string('nom_corredor_industrial')->nullable();
             $table->string('numero_local')->nullable();
             $table->string('id_zona')->nullable();
-            $table->string('id_promotor')->nullable();
+            $table->integer('bandera_prospecto')->nullable();
+            $table->string('id_promotor')->nullable();            
             $table->timestamps();
         });
     }
