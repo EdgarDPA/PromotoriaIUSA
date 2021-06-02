@@ -63,6 +63,18 @@
                                 </a>
                             </li>
 
+                            <li>
+                                <a href="{{url('gestorProspectos')}}" class="waves-effect waves-primary">
+                                    <i class="fa fa-handshake-o"></i><span> Prospectos</span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="gestorRuta" class="waves-effect waves-primary">
+                                    <i class="fa fa-upload"></i><span> Mis Rutas </span>
+                                </a>
+                            </li>
+
                             <li class="has_sub">
                                 <a href="javascript:void(0);" class="waves-effect waves-primary">
                                     <i class="fa fa-list-alt"></i> <span> Ordenes de Compra </span>

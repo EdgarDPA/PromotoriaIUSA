@@ -103,19 +103,22 @@ class OrderManagementController extends Controller
         //dd($request);
         $orden_id = $request->id;
         $correo = $request->correo;
-        $oportunidad = OrdenCompra::where('id',$orden_id)->get();
+        $oportunidad = OrdenCompra::find($orden_id);
         $oportunidades_detalle = Orden_Compra_Detalle::where('orden_compra_id',$orden_id)->get();
-        //dd($oportunidad);
-        
+       // dd($oportunidad);
+        $view= \View::make('promotor.formatos.formato_orden',compact('oportunidad','oportunidades_detalle'))->render();
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($view); 
+        $pdf->setPaper('letter', 'portrait');
         try{
             $data["email"]="$correo";
             $data["client_name"]="Daniel";
             $data["subject"]="Orden de Compra";
 
-                Mail::send('mails.edocuenta_call', $data, function($message)use($data) {
+                Mail::send('mails.edocuenta_call', $data, function($message)use($data,$pdf) {
                 $message->to($data["email"], $data["client_name"])
-                ->subject($data["subject"]);
-                //->attachData($pdf->output(), "edocuenta.pdf");
+                ->subject($data["subject"])
+                ->attachData($pdf->output(), "ORDEN.pdf");
                 });
                 return "Correo enviado";
           } catch (Exception $e) {

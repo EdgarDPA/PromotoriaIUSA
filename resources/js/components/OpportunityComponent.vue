@@ -17,9 +17,9 @@
                         </thead>
                         <tbody v-for="opportunity in opportunities" :key="opportunity.id">
                             <tr>
-                                <td>{{opportunity.Nombre}}</td>
-                                <td>{{opportunity.Ubicacion}}</td>
-                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Mapa"><a class="btn btn-danger waves-effect" data-toggle="modal" data-target="#exampleModal" @click="GMaps(opportunity.Latitud, opportunity.Longitud, opportunity.Nombre, opportunity.Ubicacion)"><i class="fa fa-map-marker" style="color:#fff;font-size:18px;"></i></a></td>
+                                <td>{{opportunity.nombre}}</td>
+                                <td>{{opportunity.direccion}}</td>
+                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Mapa"><a class="btn btn-danger waves-effect" data-toggle="modal" data-target="#exampleModal" @click="GMaps(opportunity.latitud, opportunity.longitud, opportunity.nombre, opportunity.direccion)"><i class="fa fa-map-marker" style="color:#fff;font-size:18px;"></i></a></td>
                                 <td class="text-center" data-toggle="tooltip" data-placement="left" title="Encuesta" v-if="opportunity.bandera_prospecto != 1"><a class="btn btn-success waves-effect" @click="obtenerEncuesta(opportunity)" ><i class="fa fa-check-circle" style="color:#fff;font-size:18px;"></i></a></td>
                                 <td class="text-center" data-toggle="tooltip" data-placement="left" title="Convertir Prospecto" v-if="opportunity.bandera_prospecto != 1"><a class="btn btn-warning waves-effect" @click="obtenerFormulario(opportunity)"><i class="fa fa-hand-peace-o" style="color:#fff;font-size:18px;"></i></a></td>
                                 <td class="text-center" data-toggle="tooltip" data-placement="left" title="Archivos" v-if="opportunity.bandera_prospecto != 1"><a href="files_upload" class="btn btn-primary waves-effect"><i class="fa fa-file-import"></i></a></td>                                
@@ -33,13 +33,13 @@
                  <button type="button" class="btn btn-primary" @click="volverFormulario()">Volver a lista</button>
                  <br>
                 <encuesta-prospecto-component 
-                :preNombre="oportunidadSelect.Nombre"
-                :preUbicacion="oportunidadSelect.Ubicacion"
+                :preNombre="oportunidadSelect.nombre"
+                :preUbicacion="oportunidadSelect.direccion"
                 :preId="oportunidadSelect.id"
                 :preIdDistribuidor="oportunidadSelect.idDistribuidor"
                 :preNombreDistribuidor="oportunidadSelect.nombreDistribuidor"
-                :preLatitud="oportunidadSelect.Latitud"
-                :preLongitud="oportunidadSelect.Longitud"
+                :preLatitud="oportunidadSelect.latitud"
+                :preLongitud="oportunidadSelect.longitud"
                 @Volver="volverFormulario()">
                 </encuesta-prospecto-component>
                 </div>
@@ -53,6 +53,7 @@
                             <div id="app">
                                 <encuesta-component 
                                 :idOportunidad="oportunidadSelect.id"
+                                :preNombre="oportunidadSelect.nombre"
                                 @Volver="volverFormulario()"></encuesta-component>
                             </div>                            
                         </div>           
@@ -82,6 +83,7 @@
                         </GmapMap>
                         <p></p>
                         <p style="font-size:14px;">{{ubicacion}}</p>
+                 
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -132,11 +134,11 @@
             this.cargarOportunidad()
         },
         methods: {
-            GMaps(Latitud, Longitud, Nombre, Ubicacion){
-                this.center = { lat: parseFloat(Latitud), lng: parseFloat(Longitud) }
-                this.marker = { lat: parseFloat(Latitud), lng: parseFloat(Longitud) }
-                this.nombre = Nombre;
-                this.ubicacion = Ubicacion;
+            GMaps(latitud, longitud, nombre, direccion){
+                this.center = { lat: parseFloat(latitud), lng: parseFloat(longitud) }
+                this.marker = { lat: parseFloat(latitud), lng: parseFloat(longitud) }
+                this.nombre = nombre;
+                this.ubicacion = direccion;
             },
             guardarOportunidad (){
                 let me=this;
@@ -156,7 +158,7 @@
             cargarOportunidad (){
                 let me=this;
                 me.BanderaAxios = true;
-                axios.post('./obtenerOportunidades',{
+                axios.post('./obtenerOportunidadesLista',{
                     id: '1',
                 })
                 .then(function (response) {

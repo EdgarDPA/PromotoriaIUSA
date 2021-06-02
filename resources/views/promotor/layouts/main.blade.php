@@ -48,6 +48,7 @@
 	<script src="{{ asset('js/jquery.app.js') }}"></script>
 	<!-- Vue JS -->
 	<script src="{{ asset('js/vue/vuecal_es.js') }}"></script>
+
 	<!-- Angular JS -->
 	<!-- <script src="{{ asset('js/angular.min.js') }}"></script>
 	<script src="{{ asset('js/angular-route.min.js') }}"></script>

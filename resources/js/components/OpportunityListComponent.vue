@@ -3,8 +3,8 @@
   <vue-simple-suggest
     v-model="chosen"
     :list="listaOportunidad"
-    value-attribute="id"
-    display-attribute="Nombre"
+    value-attribute="ruta_id"
+    display-attribute="nombre"
     @select="onSuggestSelect"
     :filter-by-query="true">
 <!-- Filter by input text to only show the matching results -->

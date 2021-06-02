@@ -1,5 +1,6 @@
 <template>
 <div>
+    <label>Nombre: {{preNombre}}</label>
     <div class="loader" v-if="BanderaAxios"></div>
     <div class="row">
         <div class="col-md-6">
@@ -229,6 +230,7 @@ export default {
   components: {StarRating},
   props:[
     'idOportunidad',
+    'preNombre'
     ],
   data: () => ({
       BanderaAxios: null,

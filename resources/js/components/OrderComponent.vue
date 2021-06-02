@@ -292,8 +292,8 @@
                            me.Bandera_Distribuidor_precargado = true;
                         } 
                         me.id_Usuario = data  
-                        me.id_Usuario.id = data.id
-                        me.id_Usuario.Nombre = data.nombre
+                        //me.id_Usuario.id = data.id
+                        //me.id_Usuario.Nombre = data.nombre
                     })
                     .catch(function (error) {
                         // handle error
@@ -360,7 +360,7 @@
                 me.BanderaAxios = true;
                 axios.post('./guardarOC',{
                     idUsuario: me.id_Usuario.id,
-                    nombreUsuario: me.id_Usuario.Nombre,
+                    nombreUsuario: me.id_Usuario.nombre,
                     tipoDistribuidor: me.id_distribuidor.tipo,
                     idDistribuidor: me.id_distribuidor.KUNNR,
                     nombreDistribuidor: me.id_distribuidor.NAME1,

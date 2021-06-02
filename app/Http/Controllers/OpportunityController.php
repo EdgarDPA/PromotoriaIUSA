@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Oportunidades;
+use App\Oportunidad_Piloto;
 
 use App\Prospecto;
 
@@ -18,7 +18,7 @@ class OpportunityController extends Controller
     }
 
     public function obtenerOportunidades(Request $request){
-        $oportunidades = Oportunidades::where('id_promotor',1)->get();
+        $oportunidades = Oportunidad_Piloto::where('id_promotor',1)->get();
         //dd($oportunidades);
         return response()->json(
             $oportunidades
@@ -26,7 +26,7 @@ class OpportunityController extends Controller
     }
 
     public function obtenerOportunidadesOrden(Request $request){
-        $oportunidades = Oportunidades::all()->where('id_promotor',1)->where('bandera_prospecto','!=',1); 
+        $oportunidades = Oportunidad_Piloto::all()->where('id_promotor',1)->where('bandera_prospecto','!=',1); 
         $oportunidades_query = $oportunidades->values();
         $oportunidades_query->all();
         return response()->json(
@@ -53,15 +53,15 @@ class OpportunityController extends Controller
         $nuevo_prospecto->notas = $request->notas;
         $nuevo_prospecto->idDistribuidor = $request->idDistribuidor;
         $nuevo_prospecto->nombreDistribuidor = $request->nombreDistribuidor;
-        //$nuevo_prospecto->lat = $request->lat;
-        //$nuevo_prospecto->lon = $request->lon;
+        $nuevo_prospecto->latitud = $request->lat;
+        $nuevo_prospecto->longitud = $request->lon;
         $nuevo_prospecto->id_oportunidad = $request->idOportunidad;
         $nuevo_prospecto->id_promotor = 1;
         $nuevo_prospecto->save();
         
 
         //actualizar la lista de Oportunidades
-        $oportunidad = Oportunidades::find($request->idOportunidad);
+        $oportunidad = Oportunidad_Piloto::find($request->idOportunidad);
         $oportunidad->bandera_prospecto = 1;
         $oportunidad->save();
 

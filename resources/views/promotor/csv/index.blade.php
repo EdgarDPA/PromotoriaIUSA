@@ -14,9 +14,7 @@
                 </div>
             </div>
             <div id="app">
-                <input type="file" name="inegi" class="form-control">
-                <p></p>
-                <button class="btn btn-success waves-effect">Aceptar</button>
+                <subir-csv-component></subir-csv-component>
             </div>
         </div>
     </div>

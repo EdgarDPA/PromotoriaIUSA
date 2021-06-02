@@ -43,7 +43,9 @@ Route::post('guardarOC', 'PedidoController@guardarOrden');
 
 Route::post('obtenerDistribuidores', 'PedidoController@obtenerDistribuidores');
 
-Route::post('guardarOportunidad', 'PedidoController@guardarOportunidades');
+Route::post('guardarOportunidad', 'FileController@guardarOportunidades');
+
+Route::post('subirCSVOportunidad', 'FileController@subirCSVOportunidad');
 
 Route::post('obtenerOportunidades', 'OpportunityController@obtenerOportunidades');
 
@@ -66,4 +68,15 @@ Route::post('buscarDistribuidores', 'PedidoController@buscarDistribuidores');
 Route::post('cargarCorreoDistribuidor', 'OrderManagementController@obtenerInfoDistribuidor');
 
 Route::post('enviarDetalleOC', 'OrderManagementController@envioOrdenEmail');
+
+Route::get('gestorRuta', 'RutasController@index');
+
+Route::post('obtenerRutaLista', 'RutasController@obtenerListadoRuta');
+
+Route::post('obtenerRuta', 'RutasController@obtenerRuta');
+
+Route::get('gestorProspectos', 'ProspectoController@index');
+
+Route::post('obtenerProspectos', 'ProspectoController@obtenerProspecto');
+
 });

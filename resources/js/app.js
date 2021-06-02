@@ -48,6 +48,12 @@ Vue.component('opportunity-list-component', require('./components/OpportunityLis
 Vue.component('prospecto-list-component', require('./components/ProspectoListComponent.vue').default);
 
 Vue.component('encuesta-prospecto-component', require('./components/EncuestaProspectoComponent.vue').default);
+
+Vue.component('subir-csv-component', require('./components/SubirCSVComponent.vue').default);
+
+Vue.component('gestor-ruta-component', require('./components/GestorRutaComponent.vue').default);
+
+Vue.component('gestor-prospecto-component', require('./components/ProspectoGestorComponent.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

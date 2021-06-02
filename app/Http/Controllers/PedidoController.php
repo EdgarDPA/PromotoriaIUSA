@@ -598,42 +598,6 @@ class PedidoController extends Controller
         $collection
           );
       }
-
-      public function guardarOportunidades(Request $request){
-        //dd($request);
-
-        $lista = $request->lista;
-        foreach($lista as $infoLista){
-          $nueva_orden_compra_detalle = new Oportunidades();
-          $nueva_orden_compra_detalle->Id_INEGI = $infoLista['Id'];
-          $nueva_orden_compra_detalle->Nombre= $infoLista['Nombre'];
-          $nueva_orden_compra_detalle->Razon_social= $infoLista['Razon_social'];
-          $nueva_orden_compra_detalle->Clase_actividad= $infoLista['Clase_actividad'];
-          $nueva_orden_compra_detalle->Estrato= $infoLista['Estrato'];
-          $nueva_orden_compra_detalle->Tipo_vialidad= $infoLista['Tipo_vialidad'];
-          $nueva_orden_compra_detalle->Calle= $infoLista['Calle'];
-          $nueva_orden_compra_detalle->Num_Exterior= $infoLista['Num_Exterior'];
-          $nueva_orden_compra_detalle->Num_Interior= $infoLista['Num_Interior'];
-          $nueva_orden_compra_detalle->Colonia= $infoLista['Colonia'];
-          $nueva_orden_compra_detalle->CP= $infoLista['CP'];
-          $nueva_orden_compra_detalle->Ubicacion= $infoLista['Ubicacion'];
-          $nueva_orden_compra_detalle->Telefono= $infoLista['Telefono'];
-          $nueva_orden_compra_detalle->Correo_e= $infoLista['Correo_e'];
-          $nueva_orden_compra_detalle->Sitio_internet= $infoLista['Sitio_internet'];
-          $nueva_orden_compra_detalle->Tipo= $infoLista['Tipo'];
-          $nueva_orden_compra_detalle->Longitud= $infoLista['Longitud'];
-          $nueva_orden_compra_detalle->Latitud= $infoLista['Latitud'];
-          $nueva_orden_compra_detalle->tipo_corredor_industrial = $infoLista['tipo_corredor_industrial'];
-          $nueva_orden_compra_detalle->nom_corredor_industrial = $infoLista['nom_corredor_industrial'];
-          $nueva_orden_compra_detalle->numero_local = $infoLista['numero_local'];
-          $nueva_orden_compra_detalle->id_zona = 0;
-
-          $nueva_orden_compra_detalle->id_promotor = 2;
-          
-          $nueva_orden_compra_detalle->save();
-        }
-        return 'guardado exitoso';
-    }//fin guardarOrden
     
     public function obtenerProspectosPGC(Request $request){
       //Datos para Georeferencia del Cliente
@@ -700,8 +664,7 @@ $GPOM4 = $request->gpom4;
 
 
 public function buscarDistribuidores(Request $request)
-{
-  
+{  
   $distribuidores =  Distribuidores::where('id_oportunidad',$request->id_oportunidad)->get();
       return response()->json(
         $distribuidores

@@ -4,11 +4,13 @@
         <div>
             <button class="btn btn-primary" @click="mapa=false"><i class="fa fa-chart-area"></i></button>
         </div>
+   
     </div>
     <GmapMap
     :center="center"
     :zoom="zoom"
     style="width: auto; height: 500px"
+    v-if="markers.length != 0"
     >
     <GmapMarker
     :key="key"
@@ -89,9 +91,9 @@
                 // handle success                           
             me.opportunities = response.data 
             me.data = me.opportunities;
-            let total = me.data.length;
+            let total = me.opportunities.length;
             for(let i = 0; i < total; i++){
-                me.markers.push({'lat': parseFloat(me.data[i].Latitud), 'lng': parseFloat(me.data[i].Longitud), 'name': me.data[i].Nombre, 'ubicacion': me.data[i].Ubicacion, 'telefono': me.data[i].Telefono});
+                me.markers.push({'lat': parseFloat(me.data[i].latitud), 'lng': parseFloat(me.data[i].longitud), 'name': me.data[i].nombre, 'ubicacion': me.data[i].direccion, 'telefono': me.data[i].telefono});
             }                  
             })
             .catch(function (error) {
