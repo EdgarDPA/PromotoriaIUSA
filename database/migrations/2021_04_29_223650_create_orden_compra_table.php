@@ -19,6 +19,7 @@ class CreateOrdenCompraTable extends Migration
             $table->string('tipoUsuario');
             $table->string('idUsuario');
             $table->string('nombreUsuario');
+            $table->string('tipoDistribuidor')->nullable();
             $table->string('idDistribuidor')->nullable();
             $table->string('nombreDistribuidor')->nullable();
             $table->string('orden_compra');

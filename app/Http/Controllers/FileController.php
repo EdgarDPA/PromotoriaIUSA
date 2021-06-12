@@ -149,6 +149,7 @@ class FileController extends Controller
                 $nuevo_info_rutas = new InfoRuta();
                 $nuevo_info_rutas->numero_ruta = $infolistaRuta['numero_ruta'];
                 $nuevo_info_rutas->orden_ruta = $infolistaRuta['orden_ruta'];
+                $nuevo_info_rutas->estatus = 'Sin iniciar';
                 $nuevo_info_rutas->id_promotor = 1;
                 $nuevo_info_rutas->save();
             }

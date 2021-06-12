@@ -1,34 +1,75 @@
 <template>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-12">
+            <div class="col-md-12" v-if="!banderaRutaIniciada">
                 <div class="card-box">
                     <div class="row">
                         <div class="loader" v-if="BanderaAxios"></div>
-                        <div class="col-md-6">
-                            <div class="card-box">                    
-                                <h6 class="font-size-standard">Numero de Rutas</h6>
-                                <div class="widget-chart text-center">
-                                    <select class="form-control" id="ListaRutas" name="ListaRutas"
-                                    v-model="rutaSelect">
-                                        <option disabled selected>Selecciona una Ruta</option>
-                                        <option v-for="(ListaRutas, index) in ListaRutas" :key="index"
-                                        :value="ListaRutas.numero_ruta">{{ ListaRutas.numero_ruta}}
-                                        </option>
-                                    </select>
-                                </div>
-                                <button class="btn btn-success waves-effect" @click="buscarRuta()">Buscar Ruta</button>
+                        <div class="col-md-4"> 
+
+                            <div class="table-responsive" style="width: auto;height: 400px;" v-if="infoRuta.length == 0">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4">Rutas</th>
+                                        </tr>
+                                        <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Estatus</th>
+                                        <th scope="col" colspan="2">Opciones</th>                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(ListaRutas, index) in ListaRutas" :key="index">
+                                            <th scope="row">{{ ListaRutas.numero_ruta}}</th>
+                                            <td>{{ ListaRutas.estatus}}</td>
+                                            <td class="align-middle" title="Ver Mapa"><i class="fa fa-location-arrow" aria-hidden="true" @click="buscarRuta(ListaRutas.numero_ruta)" ></i></td>
+                                            <td class="align-middle" title="Iniciar Ruta"><i class="fa fa-play-circle" aria-hidden="true" @click="iniciarRuta(ListaRutas.numero_ruta)" ></i></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
+
+                            <div class="table-responsive" style="width: auto;height: 400px;" v-if="infoRuta.length != 0">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <button class="btn btn-danger waves-effect" @click="borrarInfoRuta()">
+                                                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                                                </button>
+                                            </th>
+                                            <th>Detalle Ruta {{rutaSelect}}</th>
+                                        </tr>
+                                        <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Oportunidad</th>                                                                                  
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(infoRuta, index) in infoRuta" :key="index">
+                                            <th scope="row">{{ infoRuta.ruta_id}}</th>
+                                            <td @click="selecionarMarcador(infoRuta)">{{ infoRuta.nombre}}</td>                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>                                                                        
                         </div>
-                        <div class="col-md-6">
-                            <div class="card-box">
+
+                        <div class="col-md-8">
+                            <h4>Ruta {{rutaSelect}}</h4>
                                 <div id="mapa1" style="width: 100%; height: 300px">
-                                </div>
+                                
                             </div>
                         </div>
                     </div><!-- fin row-->
-                </div>
-            </div>        
+                </div><!-- fin card rutas -->                
+            </div><!-- fin col-lg-12 -->
+
+            <div class="col-md-12" v-if="banderaRutaIniciada">                
+                <seguimiento-ruta-component></seguimiento-ruta-component>              
+            </div><!-- fin col-lg-12 -->
+
         </div>
     </div>
 </template>
@@ -36,7 +77,6 @@
 <script>
 import Vue from 'vue'
 import * as VueGoogleMaps from 'vue2-google-maps'
-import {gmapApi} from 'vue2-google-maps'
 
     Vue.use(VueGoogleMaps, {
         load: {
@@ -47,6 +87,7 @@ import {gmapApi} from 'vue2-google-maps'
 
     Vue.component('google-map', VueGoogleMaps.Map);
     Vue.component('google-marker', VueGoogleMaps.Marker);
+
     export default {
         data(){
             return{
@@ -58,7 +99,8 @@ import {gmapApi} from 'vue2-google-maps'
                 origen : "",
                 destino  : "",
                 coords : {},
-                destination : {}
+                destination : {},
+                banderaRutaIniciada : false
             }  
         },        
         mounted() {
@@ -83,8 +125,13 @@ import {gmapApi} from 'vue2-google-maps'
                     console.log(error);              
                 });
             },
-            buscarRuta(){
+            borrarInfoRuta(){
                 let me=this;
+                me.infoRuta = [];
+            },
+            buscarRuta(id){
+                let me=this;
+                me.rutaSelect = id;
                 me.BanderaAxios = true;
                 axios.post('./obtenerRuta',{
                     id_ruta: me.rutaSelect,
@@ -119,11 +166,8 @@ import {gmapApi} from 'vue2-google-maps'
             formarRuta1 () {
                 this.$gmapApiPromiseLazy().then(() => { var bounds = new google.maps.LatLngBounds() /* etc */ 
                 var directionsService = new google.maps.DirectionsService()
-                var directionsDisplay = new google.maps.DirectionsRenderer()
+                var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true})
                 
-                directionsDisplay.addListener('directions_changed', function() {
-                    //computeTotalDistance(directionsDisplay.getDirections());
-                })
 
 
                 this.map = new google.maps.Map(document.getElementById('mapa1'), {
@@ -145,20 +189,72 @@ import {gmapApi} from 'vue2-google-maps'
                 }, function(response, status) {
                     if (status === 'OK') {
                     console.log(response)            
-                    directionsDisplay.setDirections(response)            
+                    directionsDisplay.setDirections(response)                               
                     } else {
                     
                     }
                 });
                 }
+
+                 function ponerMarcadores(infoRuta,map){
+                   const infoWindow = new google.maps.InfoWindow();
+
+                     for (let i = 0; i < infoRuta.length; i++) {
+                        const ruta = infoRuta[i];
+                        console.log(ruta.latitud);
+                        const marker = new google.maps.Marker({
+                        position: { lat: parseFloat(ruta.latitud), lng: parseFloat(ruta.longitud)},
+                        map: map,
+                        title: ruta.nombre,
+                        label: ruta.orden_ruta,
+                        color: 'green'
+                        });
+                        //agregar click listener
+                        marker.addListener("click", () => {
+                        infoWindow.close();
+                        infoWindow.setContent(marker.getTitle());
+                        infoWindow.open(marker.getMap(), marker);
+                        });
+
+                    }
+                 }
                 
                 console.log(this.coords)
                 console.log(this.destination)
                 console.log(this.registro_rutas)
                 console.log('hmmm yha')
                 calculateAndDisplayRoute(directionsService, directionsDisplay, this.coords, this.destination,this.registro_rutas)
+                ponerMarcadores(this.infoRuta,this.map) 
                 })
-            }
+            },
+            selecionarMarcador(infoRuta){
+                console.log(infoRuta);
+
+                this.coords = {
+                    lat: parseFloat(infoRuta.latitud),
+                    lng: parseFloat(infoRuta.longitud)
+                    }
+                    this.map.setZoom(19);
+                    this.map.setCenter(this.coords);
+            },
+            iniciarRuta(id){
+                let me=this;
+                me.banderaRutaIniciada = true;
+
+                /*me.BanderaAxios = true;
+                axios.post('./iniciarRuta',{
+                    id_ruta: me.id,
+                })
+                .then(function (response) {
+                    // handle success            
+                    me.BanderaAxios = false;
+                    me.banderaRutaIniciada = true;
+                })
+                .catch(function (error) {
+                    me.BanderaAxios = false;
+                    console.log(error);              
+                });*/
+            },
         }
     }
 </script>

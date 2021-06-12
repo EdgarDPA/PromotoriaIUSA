@@ -11,6 +11,7 @@ class InfoRuta extends Model
     protected $fillable = [
         'numero_ruta',
         'orden_ruta',
+        'estatus',
         'id_promotor'
     ];
 }

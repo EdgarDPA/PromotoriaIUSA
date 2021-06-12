@@ -28,6 +28,8 @@ class CreateTableProspecto extends Migration
             $table->string('transporte')->nullable();
             $table->string('mostrador')->nullable();
             $table->string('notas')->nullable();
+            $table->string('latitud')->nullable();
+            $table->string('longitud')->nullable();
             $table->string('idDistribuidor')->nullable();
             $table->string('nombreDistribuidor')->nullable();
             $table->string('id_oportunidad')->nullable();

@@ -16,7 +16,8 @@ class CreateTablaInforuta extends Migration
         Schema::create('inforuta', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('numero_ruta')->nullable();
-            $table->string('orden_ruta')->nullable();           
+            $table->string('orden_ruta')->nullable();       
+            $table->string('estatus')->nullable();         
             $table->string('id_promotor')->nullable();
             $table->timestamps();
         });

@@ -665,9 +665,11 @@ $GPOM4 = $request->gpom4;
 
 public function buscarDistribuidores(Request $request)
 {  
-  $distribuidores =  Distribuidores::where('id_oportunidad',$request->id_oportunidad)->get();
+  $distribuidoresIusa =  Distribuidores::where('id_oportunidad',$request->id_oportunidad)->where('tipo','IUSA')->get();
+  $distribuidoresOTRO =  Distribuidores::where('id_oportunidad',$request->id_oportunidad)->where('tipo','Otro')->get();
+  $datos = ['iusa' => $distribuidoresIusa,'otros' => $distribuidoresOTRO];
       return response()->json(
-        $distribuidores
+        $datos
           );
 }
 

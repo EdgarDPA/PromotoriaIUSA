@@ -37,6 +37,7 @@ class CreateOportunidadPiloto extends Migration
             $table->string('numero_ruta')->nullable();
             $table->string('orden_ruta')->nullable();
             $table->string('bandera_prospecto')->nullable();
+            $table->string('bandera_encuesta')->nullable();
             $table->string('id_promotor')->nullable();
             $table->timestamps();
         });

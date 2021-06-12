@@ -8,6 +8,8 @@ use App\Distribuidores;
 
 use App\Encuesta;
 
+use App\Oportunidad_Piloto;
+
 class EncuestaController extends Controller
 {
     /**
@@ -58,7 +60,6 @@ class EncuestaController extends Controller
         }
         //guardar encuesta
         $nueva_encuesta= new Encuesta();
-
         $nueva_encuesta->pregunta1 = $request->pregunta1;
         $nueva_encuesta->pregunta2 = $request->pregunta2;
         $nueva_encuesta->pregunta3 = $request->pregunta3;
@@ -71,6 +72,11 @@ class EncuestaController extends Controller
         $nueva_encuesta->pregunta10 = $request->pregunta10;
         $nueva_encuesta->id_oportunidad = $request->idOportunidad;
         $nueva_encuesta->save();
+
+        //actualizar estado de encuesta
+        $actualizar_oportunidad = Oportunidad_Piloto::find($request->idOportunidad);
+        $actualizar_oportunidad->bandera_encuesta = 1;
+        $actualizar_oportunidad->save();
 
         return 'guardado exitoso';
     }

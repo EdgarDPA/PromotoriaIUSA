@@ -97,10 +97,22 @@
         </div>
         <div class="col-lg-12" style="margin-bottom:10px;" v-if="Bandera_Distribuidor_precargado == true">
             <h4 class="text-dark  header-title m-t-0 m-b-20"><span class="fa fa-user-plus"></span>Seleccionar Distribuidor</h4>
-            <div class="col-auto" v-for="(listaDistribuidores, index) in listaDistribuidores" :key="index">
-                <input type="radio" id="Oportunidad" :value="listaDistribuidores" v-model="distri_select" >
-                <label for="Oportunidad"><strong>{{listaDistribuidores.idIusa}} - {{listaDistribuidores.nombre}}</strong></label>                
-            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <label><strong>IUSA</strong></label><br>
+                    <div class="col-auto" v-for="(listaDistribuidoresIusa, index) in listaDistribuidoresIusa" :key="index">
+                        <input type="radio" id="Oportunidad" :value="listaDistribuidoresIusa" v-model="distri_select" >
+                        <label for="Oportunidad"><strong>{{listaDistribuidoresIusa.idIusa}} - {{listaDistribuidoresIusa.nombre}}</strong></label>                
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <label><strong>Otros</strong></label><br>
+                    <div class="col-auto" v-for="(listaDistribuidoresOtros, index) in listaDistribuidoresOtros" :key="index">
+                        <input type="radio" id="Oportunidad" :value="listaDistribuidoresOtros" v-model="distri_select" >
+                        <label for="Oportunidad"><strong>{{listaDistribuidoresOtros.nombre}}</strong></label>                
+                    </div>
+                </div>   
+            </div>         
         </div>
     </div>
 
@@ -217,7 +229,8 @@
                 orden_compra: '',
                 id_Usuario: '',
                 listaCarrito: [],
-                listaDistribuidores: [],
+                listaDistribuidoresIusa: [],
+                listaDistribuidoresOtros:[],
                 distri_select: '',
                 tipo_orden: null,
                 Bandera_Distribuidor_precargado: false,
@@ -262,8 +275,9 @@
                     .then(function (response) {
                         // handle success
                         me.BanderaAxios = false;
-                        me.listaDistribuidores = response.data                    
-                        if(me.listaDistribuidores.length != 0){                    
+                        me.listaDistribuidoresIusa = response.data.iusa;
+                        me.listaDistribuidoresOtros = response.data.otros;              
+                        if(me.listaDistribuidoresIusa.length != 0){                    
                            me.Bandera_Distribuidor_precargado = true;
                         } 
                         me.id_Usuario = data  
@@ -287,8 +301,9 @@
                     .then(function (response) {
                         // handle success
                         me.BanderaAxios = false;
-                        me.listaDistribuidores = response.data                    
-                        if(me.listaDistribuidores.length != 0){                    
+                        me.listaDistribuidoresIusa = response.data.iusa;
+                        me.listaDistribuidoresOtros = response.data.otros;                   
+                        if(me.listaDistribuidoresIusa.length != 0){                    
                            me.Bandera_Distribuidor_precargado = true;
                         } 
                         me.id_Usuario = data  

@@ -20,6 +20,8 @@ class CreateDistribuidoresOtrosTable extends Migration
             $table->string('tipo')->nullable();
             $table->string('direccion')->nullable();
             $table->string('telefono')->nullable();
+            $table->string('correo')->nullable();
+            $table->string('cp')->nullable();
             $table->string('calificacion')->nullable();
             $table->string('id_oportunidad');
             $table->timestamps();

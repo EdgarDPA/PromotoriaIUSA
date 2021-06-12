@@ -31,6 +31,7 @@ class Oportunidad_Piloto extends Model
         'numero_ruta',
         'orden_ruta',
         'bandera_prospecto',
+        'bandera_encuesta',
         'id_promotor'
     ];
 }
