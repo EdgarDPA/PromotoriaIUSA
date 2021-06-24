@@ -120,6 +120,11 @@ class OrderManagementController extends Controller
                 ->subject($data["subject"])
                 ->attachData($pdf->output(), "ORDEN.pdf");
                 });
+                //cambiar estado oc 
+                $oc =  OrdenCompra::find($orden_id);
+                $oc->estatus = 'Enviado';
+                $oc->save();
+                
                 return "Correo enviado";
           } catch (Exception $e) {
             return "Error en el envio de correo, verifique la dirección e intentelo mas tarde";

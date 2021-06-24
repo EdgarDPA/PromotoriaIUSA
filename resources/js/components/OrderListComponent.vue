@@ -1,7 +1,7 @@
 <template>
 <div class="col-lg-12">
     <div class="card-box">
-        <h4 class="text-dark  header-title m-t-0 m-b-30"><i class="fa fa-file-text-o" aria-hidden="true"></i> Seguimiento de Ordenes de Compra</h4>
+        <h4 class="text-dark  header-title m-t-0 m-b-30"><i class="fa fa-file-text-o" aria-hidden="true"></i> Seguimiento de Pedidos Sugeridos</h4>
         <div class="loader" v-if="BanderaAxios"></div>
         <table class="table table-sm ">
             <thead class="thead-dark">
@@ -30,7 +30,8 @@
                     <td>{{orden.nombreDistribuidor}}</td>
                     <td>{{orden.orden_compra}}</td>
                     <td>                        
-                            <strong class="text-warning"  v-if="orden.estatus == 'Pendiente'">{{orden.estatus}}</strong>  
+                            <strong class="text-warning"  v-if="orden.estatus == 'Pendiente'">{{orden.estatus}}</strong>
+                            <strong class="text-primary"  v-if="orden.estatus == 'Enviado'">{{orden.estatus}}</strong>  
                     </td>
                     <td class="text-center" data-toggle="tooltip" data-placement="left" title="Detalle"><a class="btn btn-primary waves-effect" data-toggle="modal" data-target="#exampleModal" @click="detalleOrden(orden)"><i class="fa fa-search" style="color:#fff;font-size:18px;"></i></a></td>
                      <td class="text-center" data-toggle="tooltip" data-placement="left" title="Enviar"><a class="btn btn-success waves-effect" data-toggle="modal" data-target="#envioOrden" @click="cargarDistribuidor(orden)"><i class="fa fa-paper-plane" style="color:#fff;font-size:18px;"></i></a></td>

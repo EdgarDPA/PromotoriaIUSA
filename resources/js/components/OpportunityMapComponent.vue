@@ -22,6 +22,16 @@
     :animation=2
     @click="getInfo(marker, key)"
     />
+    <GmapMarker
+    :key="key"
+    v-for="(marker2, key) in markers2"                                           
+    :position="marker2"
+    :icon="markerOptions2"
+    :clickable="true"
+    :draggable="false"
+    :animation=2
+    @click="getInfo(marker2, key)"
+    />
     <GmapInfoWindow 
     @closeclick="window_open=false"
     :opened="window_open" 
@@ -59,6 +69,7 @@
     });
 
     const mapMarker = require('../../../public/placeholder.svg');
+    const mapMarkerPromotor = require('../../../public/store-selected.svg');
 
     export default {
         data(){
@@ -70,8 +81,15 @@
                 size: {width: 45, height: 45, f: 'px', b: 'px',},
                 scaledSize: {width: 45, height: 45, f: 'px', b: 'px',},
                 },
+                markerOptions2: {
+                labelOrigin: { x: 45, y: 15},
+                url: mapMarkerPromotor,
+                size: {width: 45, height: 45, f: 'px', b: 'px',},
+                scaledSize: {width: 45, height: 45, f: 'px', b: 'px',},
+                },
                 data: null,
                 markers:[],
+                markers2:[],
                 window_open: false,
                 infowindow: null,
                 name:null,
@@ -93,7 +111,11 @@
             me.data = me.opportunities;
             let total = me.opportunities.length;
             for(let i = 0; i < total; i++){
+                if(me.data[i].bandera_prospecto == 1){
+me.markers2.push({'lat': parseFloat(me.data[i].latitud), 'lng': parseFloat(me.data[i].longitud), 'name': me.data[i].nombre, 'ubicacion': me.data[i].direccion, 'telefono': me.data[i].telefono});
+                }else{
                 me.markers.push({'lat': parseFloat(me.data[i].latitud), 'lng': parseFloat(me.data[i].longitud), 'name': me.data[i].nombre, 'ubicacion': me.data[i].direccion, 'telefono': me.data[i].telefono});
+                }
             }                  
             })
             .catch(function (error) {

@@ -10,6 +10,8 @@ use App\Oportunidad_Piloto;
 
 use App\InfoRuta;
 
+use App\Bitacora_Ruta;
+
 use DB;
 
 class RutasController extends Controller
@@ -63,5 +65,43 @@ class RutasController extends Controller
             $lista_rutas
             );
     }//fin obtenerListadoRuta
+
+    public function buscarRutaIniciada(Request $request){
+        $NumeroPromotor = 1;
+        $ruta_iniciada = DB::connection()->select("SELECT * FROM inforuta WHERE id_promotor like '$NumeroPromotor' AND estatus like 'En proceso' ");                        
+        return response()->json(
+            $ruta_iniciada[0]
+            );
+    }//fin obtenerListadoRuta
+
+    public function iniciarRuta(Request $request){
+        $idRuta = $request->id_ruta;
+        date_default_timezone_set('America/Mexico_City');
+        $fechaactual= date("Y-m-d");
+        $horaactual= date("H:i:s");
+        //actualizar estado de encuesta
+        $rutaInfo = InfoRuta::find($idRuta);
+        if($rutaInfo->fecha_inicio == null){
+            $rutaInfo->fecha_inicio = $fechaactual;
+        }
+        if($rutaInfo->hora_inicio == null){
+            $rutaInfo->hora_inicio = $horaactual;
+        }
+        $rutaInfo->estatus = 'En proceso';
+        $rutaInfo->save();
+        return 'Inicio Ruta';
+    }
+
+    public function pausarRuta(Request $request){
+        $idRuta = $request->id_ruta;
+        date_default_timezone_set('America/Mexico_City');
+        $fechaactual= date("Y-m-d");
+        $horaactual= date("H:i:s");
+        //actualizar estado de encuesta
+        $rutaInfo = InfoRuta::find($idRuta);
+        $rutaInfo->estatus = 'En pausa';
+        $rutaInfo->save();
+        return 'Pausa Ruta';
+    }
 
 }

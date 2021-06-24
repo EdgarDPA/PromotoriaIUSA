@@ -82,7 +82,7 @@
                                 </a>
                                 <ul class="list-unstyled">
                                     <li><a href="{{url('pedido')}}">Crear Orden</a></li>
-                                    <li><a href="{{url('seguimientoOrden')}}">Seguimiento a Orden</a></li>
+                                    <li><a href="{{url('seguimientoOrden')}}">Pedidos Sugeridos</a></li>
                                     <!-- <li><a href="ui-cards.html">Cards</a></li>
                                     <li><a href="ui-portlets.html">Portlets</a></li>
                                     <li><a href="ui-checkbox-radio.html">Checkboxs-Radios</a></li>

@@ -24,7 +24,7 @@
                                             <th scope="row">{{ ListaRutas.numero_ruta}}</th>
                                             <td>{{ ListaRutas.estatus}}</td>
                                             <td class="align-middle" title="Ver Mapa"><i class="fa fa-location-arrow" aria-hidden="true" @click="buscarRuta(ListaRutas.numero_ruta)" ></i></td>
-                                            <td class="align-middle" title="Iniciar Ruta"><i class="fa fa-play-circle" aria-hidden="true" @click="iniciarRuta(ListaRutas.numero_ruta)" ></i></td>
+                                            <td class="align-middle" title="Iniciar Ruta"><i class="fa fa-play-circle" aria-hidden="true" @click="iniciarRuta(ListaRutas)" ></i></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -67,7 +67,10 @@
             </div><!-- fin col-lg-12 -->
 
             <div class="col-md-12" v-if="banderaRutaIniciada">                
-                <seguimiento-ruta-component></seguimiento-ruta-component>              
+                <seguimiento-ruta-component
+                v-if="id_ruta_iniciada"
+                @Volver="volverGestor()">
+                </seguimiento-ruta-component>              
             </div><!-- fin col-lg-12 -->
 
         </div>
@@ -100,7 +103,8 @@ import * as VueGoogleMaps from 'vue2-google-maps'
                 destino  : "",
                 coords : {},
                 destination : {},
-                banderaRutaIniciada : false
+                banderaRutaIniciada : false,
+                id_ruta_iniciada : null
             }  
         },        
         mounted() {
@@ -118,7 +122,13 @@ import * as VueGoogleMaps from 'vue2-google-maps'
                     // handle success
                     me.ListaRutas = response.data;             
                     me.BanderaAxios = false;
-                
+                    for (let i = 0; i < me.ListaRutas.length; i++) {
+                        const ruta = me.ListaRutas[i];
+                        if(ruta.estatus == 'En proceso'){
+                           me.banderaRutaIniciada = true;
+                            me.id_ruta_iniciada = ruta; 
+                        }
+                    }
                 })
                 .catch(function (error) {
                     me.BanderaAxios = false;
@@ -198,24 +208,39 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 
                  function ponerMarcadores(infoRuta,map){
                    const infoWindow = new google.maps.InfoWindow();
-
                      for (let i = 0; i < infoRuta.length; i++) {
                         const ruta = infoRuta[i];
-                        console.log(ruta.latitud);
-                        const marker = new google.maps.Marker({
-                        position: { lat: parseFloat(ruta.latitud), lng: parseFloat(ruta.longitud)},
-                        map: map,
-                        title: ruta.nombre,
-                        label: ruta.orden_ruta,
-                        color: 'green'
-                        });
-                        //agregar click listener
-                        marker.addListener("click", () => {
-                        infoWindow.close();
-                        infoWindow.setContent(marker.getTitle());
-                        infoWindow.open(marker.getMap(), marker);
-                        });
-
+                    
+                        if(ruta.bandera_encuesta == 1){
+                            const marker = new google.maps.Marker({
+                            position: { lat: parseFloat(ruta.latitud), lng: parseFloat(ruta.longitud)},
+                            map: map,
+                            title: ruta.nombre,
+                            label: {text: ruta.orden_ruta, color: "black"},
+                            icon: {
+                            url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                            }
+                            });
+                            //agregar click listener
+                            marker.addListener("click", () => {
+                            infoWindow.close();
+                            infoWindow.setContent(marker.getTitle());
+                            infoWindow.open(marker.getMap(), marker);
+                            });
+                        }else{
+                            const marker = new google.maps.Marker({
+                            position: { lat: parseFloat(ruta.latitud), lng: parseFloat(ruta.longitud)},
+                            map: map,
+                            title: ruta.nombre,
+                            label: {text: ruta.orden_ruta, color: "white"},
+                            });
+                            //agregar click listener
+                            marker.addListener("click", () => {
+                            infoWindow.close();
+                            infoWindow.setContent(marker.getTitle());
+                            infoWindow.open(marker.getMap(), marker);
+                            });
+                        }
                     }
                  }
                 
@@ -237,24 +262,30 @@ import * as VueGoogleMaps from 'vue2-google-maps'
                     this.map.setZoom(19);
                     this.map.setCenter(this.coords);
             },
-            iniciarRuta(id){
+            iniciarRuta(rutaSelec){
                 let me=this;
                 me.banderaRutaIniciada = true;
-
-                /*me.BanderaAxios = true;
+                me.BanderaAxios = true;
                 axios.post('./iniciarRuta',{
-                    id_ruta: me.id,
+                    id_ruta: rutaSelec.id,
                 })
                 .then(function (response) {
                     // handle success            
                     me.BanderaAxios = false;
                     me.banderaRutaIniciada = true;
+                    me.id_ruta_iniciada = rutaSelec;
                 })
                 .catch(function (error) {
                     me.BanderaAxios = false;
                     console.log(error);              
-                });*/
+                });
             },
+            volverGestor(){
+                let me=this;
+                me.banderaRutaIniciada = false;
+                me.id_ruta_iniciada = null; 
+                me.buscarRutaLista();
+            }
         }
     }
 </script>

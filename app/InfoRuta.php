@@ -12,6 +12,10 @@ class InfoRuta extends Model
         'numero_ruta',
         'orden_ruta',
         'estatus',
+        'fecha_inicio',
+        'hora_inicio',
+        'fecha_final',
+        'hora_final',
         'id_promotor'
     ];
 }

@@ -1,8 +1,8 @@
 <template>
 <div>
 <div class="card-box">
-    <h3 class="text-dark  header-title m-t-0 m-b-20">Seleccionar Tipo de Usuario a Orden de Compra</h3>
-    <div class="form-row align-items-center">         
+    <h3 class="text-dark  header-title m-t-0 m-b-20">Generar Orden de Compra</h3>
+    <!--<div class="form-row align-items-center">         
         <div class="col-auto">
             <input type="radio" id="Oportunidad" value="Oportunidad" v-model="tipo_orden">
             <label for="Oportunidad"><strong>Oportunidad</strong></label>
@@ -15,7 +15,7 @@
     <div v-show ="tipo_orden == 'Oportunidad'">
         <h4 class="text-dark  header-title m-t-0 m-b-20"><span class="fa fa-user"></span> Oportunidad a Orden de Compra</h4>
         <opportunity-list-component @DealerValue="obtenerDistribuidor($event)"></opportunity-list-component>
-    </div>
+    </div>-->
     <div v-show ="tipo_orden == 'Prospecto'">
         <h4 class="text-dark  header-title m-t-0 m-b-20"><span class="fa fa-user"></span> Prospecto a Orden de Compra</h4>
         <prospecto-list-component @DealerValue="obtenerDistribuidorProspecto($event)"></prospecto-list-component>
@@ -232,7 +232,7 @@
                 listaDistribuidoresIusa: [],
                 listaDistribuidoresOtros:[],
                 distri_select: '',
-                tipo_orden: null,
+                tipo_orden: 'Prospecto',
                 Bandera_Distribuidor_precargado: false,
                 bandera_tabla:0,
                 listaCatalogo:[],
@@ -296,7 +296,7 @@
                 me.id_Usuario= {};
                  me.BanderaAxios = true;
                     axios.post('./buscarDistribuidores',{
-                        id_oportunidad:data.id_oportunidad,
+                        id_oportunidad:data.id,
                     })
                     .then(function (response) {
                         // handle success

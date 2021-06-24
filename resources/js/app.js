@@ -56,6 +56,10 @@ Vue.component('gestor-ruta-component', require('./components/GestorRutaComponent
 Vue.component('gestor-prospecto-component', require('./components/ProspectoGestorComponent.vue').default);
 
 Vue.component('seguimiento-ruta-component', require('./components/SeguimientoRutaComponent.vue').default);
+
+Vue.component('encuesta-detalle-component', require('./components/EncuestaDetalleComponent.vue').default);
+
+Vue.component('baja-oportunidad-component', require('./components/BajaOportunidadComponent.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

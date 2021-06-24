@@ -25,6 +25,8 @@ class CreateEncuestaTable extends Migration
             $table->string('pregunta8')->nullable();
             $table->string('pregunta9')->nullable();
             $table->string('pregunta10')->nullable();
+            $table->string('fecha')->nullable();
+            $table->string('hora')->nullable();
             $table->string('id_oportunidad');
             $table->timestamps();
         });

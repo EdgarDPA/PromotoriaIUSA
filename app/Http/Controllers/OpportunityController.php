@@ -34,6 +34,17 @@ class OpportunityController extends Controller
               );
     }
 
+    public function oportunidadCancelada(Request $request){
+
+       //actualizar la lista de Oportunidades
+        $oportunidad = Oportunidad_Piloto::find($request->idOportunidad);
+        $oportunidad->bandera_cancelada = 1;
+        $oportunidad->motivo_cancelacion = $request->motivo;
+        $oportunidad->save();
+
+        return 'guardado exitoso';
+    }
+
     public function nuevoProspecto(Request $request){
         //dd($request);
         //guardar info en prospecto

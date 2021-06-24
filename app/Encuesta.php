@@ -19,6 +19,8 @@ class Encuesta extends Model
         'pregunta8',
         'pregunta9',
         'pregunta10',
+        'fecha',
+        'hora',
         'id_oportunidad'
     ];
 }

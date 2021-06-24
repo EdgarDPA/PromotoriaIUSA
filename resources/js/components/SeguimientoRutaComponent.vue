@@ -3,61 +3,63 @@
         <div class="row justify-content-center">
             <div class="col-md-12" v-if="!ocultar_tabla">
                 <div class="card-box">
-                    <div class="loader" v-if="BanderaAxios"></div>
-                    <h4 class="text-dark  header-title m-t-0 m-b-30">Ruta de prueba 01</h4>
+                    <div class="loader" v-if="BanderaAxios"></div>                    
+                        <h3 class="text-dark text-center header-title m-t-0 m-b-30">Ruta {{idRuta.numero_ruta}} Iniciada</h3>
+                        <button type="button" class="btn btn-warning" @click="pausarRuta()">Pausar Ruta</button>                    
+                    <div id="mapa1" style="width: 100%; height: 300px"></div>    
                     <table class="table">
                         <thead class="thead-dark">
                             <tr>
+                                <th style="text-align:left;font-size:12px;">ID</th>
                                 <th style="text-align:left;font-size:12px;">NOMBRE</th>
                                 <th style="text-align:left;font-size:12px;">UBICACIÓN</th>
                                 <th style="text-align:left;font-size:12px;" colspan="4">OPCIONES</th>
-                                <!-- <th></th>
-                                <th></th> -->
                             </tr>
                         </thead>
                         <tbody v-for="opportunity in opportunities" :key="opportunity.id">
-                            <tr>
+                            <tr v-bind:class="{ realizado: opportunity.bandera_encuesta == 1, cancelado: opportunity.bandera_cancelada == 1 }">
+                                <td>{{opportunity.ruta_id}}</td>
                                 <td>{{opportunity.nombre}}</td>
                                 <td>{{opportunity.direccion}}</td>
                                 <td class="text-center" data-toggle="tooltip" data-placement="left" title="Mapa"><a class="btn btn-danger waves-effect" data-toggle="modal" data-target="#exampleModal" @click="GMaps(opportunity.latitud, opportunity.longitud, opportunity.nombre, opportunity.direccion)"><i class="fa fa-map-marker" style="color:#fff;font-size:18px;"></i></a></td>
-                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Encuesta" v-if="opportunity.bandera_prospecto != 1"><a class="btn btn-success waves-effect" @click="obtenerEncuesta(opportunity)" ><i class="fa fa-check-circle" style="color:#fff;font-size:18px;"></i></a></td>
-                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Convertir Prospecto" v-if="opportunity.bandera_prospecto != 1"><a class="btn btn-warning waves-effect" @click="obtenerFormulario(opportunity)"><i class="fa fa-hand-peace-o" style="color:#fff;font-size:18px;"></i></a></td>
-                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Archivos" v-if="opportunity.bandera_prospecto != 1"><a href="files_upload" class="btn btn-primary waves-effect"><i class="fa fa-file-import"></i></a></td>                                
+                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Encuesta" v-show="opportunity.bandera_encuesta != 1 && opportunity.bandera_cancelada != 1"><a class="btn btn-success waves-effect" @click="obtenerEncuesta(opportunity)" ><i class="fa fa-check-circle" style="color:#fff;font-size:18px;"></i></a></td>
+                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Ver Distriuidores" v-show="opportunity.bandera_encuesta == 1 && opportunity.bandera_cancelada != 1"><a class="btn waves-effect" style="background:#ff5f3d;" @click="obtenerDetalleEncuesta(opportunity)" ><i class="fa fa-search" style="color:#fff;font-size:18px;"></i></a></td>
+                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Reportar Oportunidad" v-show="opportunity.bandera_encuesta != 1 && opportunity.bandera_cancelada != 1"><a class="btn btn-warning waves-effect" @click="obtenerFormulario(opportunity)"><i class="fa fa-times" aria-hidden="true"></i></a></td>
+                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Archivos" v-show="opportunity.bandera_cancelada != 1"><a href="files_upload" class="btn btn-primary waves-effect"><i class="fa fa-file-import"></i></a></td> 
+                                <td class="text-center" v-show="opportunity.bandera_encuesta == 1"></td>
+                                <td class="text-center" colspan="4" v-show="opportunity.bandera_cancelada == 1"></td>                           
                             </tr>
                         </tbody>
-                    </table>
+                    </table>                    
                 </div>
             </div>
            <div class="col-md-12" v-if="bandera_convertir"> 
                 <div class="card-box">                
                  <button type="button" class="btn btn-primary" @click="volverFormulario()">Volver a lista</button>
                  <br>
-                <encuesta-prospecto-component 
-                :preNombre="oportunidadSelect.nombre"
-                :preUbicacion="oportunidadSelect.direccion"
-                :preId="oportunidadSelect.id"
-                :preIdDistribuidor="oportunidadSelect.idDistribuidor"
-                :preNombreDistribuidor="oportunidadSelect.nombreDistribuidor"
-                :preLatitud="oportunidadSelect.latitud"
-                :preLongitud="oportunidadSelect.longitud"
+                <baja-oportunidad-component 
+                :preNombre="oportunidadSelect.nombre"                
+                :preId="oportunidadSelect.id"                
                 @Volver="volverFormulario()">
-                </encuesta-prospecto-component>
+                </baja-oportunidad-component>
                 </div>
             </div>
             <div class="col-md-12" v-if="bandera_encuesta"> 
                 <div class="card-box">
-                    <button type="button" class="btn btn-primary" @click="volverFormulario()">Volver a lista</button>
-                    <div class="row">  
-                        <div class="col-lg-12">                            
-                            <h4 class="text-dark  header-title m-t-0 m-b-30">ENCUESTA</h4>
-                            <div id="app">
-                                <encuesta-component 
-                                :idOportunidad="oportunidadSelect.id"
-                                :preNombre="oportunidadSelect.nombre"
-                                @Volver="volverFormulario()"></encuesta-component>
-                            </div>                            
-                        </div>           
-                    </div>
+                    <button type="button" class="btn btn-primary" @click="volverFormulario()">Volver a lista</button>                    
+                    <encuesta-component 
+                    :idOportunidad="oportunidadSelect.id"
+                    :preNombre="oportunidadSelect.nombre"
+                    @Volver="volverFormulario()"></encuesta-component>                            
+                </div>
+            </div>
+            <div class="col-md-12" v-if="bandera_detalle_encuesta"> 
+                <div class="card-box">
+                    <button type="button" class="btn btn-primary" @click="volverFormulario()">Volver a lista</button>                    
+                    <encuesta-detalle-component 
+                    :idOportunidad="oportunidadSelect.id"
+                    :preNombre="oportunidadSelect.nombre"
+                    @Volver="volverFormulario()"></encuesta-detalle-component>                            
                 </div>
             </div>
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -94,7 +96,14 @@
         </div>
     </div>
 </template>
-
+<style>
+.realizado{
+    background:#86c7a1;
+}
+.cancelado{
+    background:#ee4242;
+}
+</style>
 <script>
     import Vue from 'vue'
     import * as VueGoogleMaps from 'vue2-google-maps'
@@ -125,13 +134,15 @@
                 ocultar_tabla: false,
                 bandera_convertir: false,
                 bandera_encuesta: false,
+                bandera_detalle_encuesta: false,
                 oportunidadSelect:[],
-                BanderaAxios : false
+                BanderaAxios : false,
+                idRuta:''
             }  
         },
-        mounted() {
+        created() {
             console.log('OpportunityComponent')
-            this.cargarOportunidad()
+            this.buscarRutaInicio()
         },
         methods: {
             GMaps(latitud, longitud, nombre, direccion){
@@ -155,21 +166,133 @@
                     console.log(error);              
                 });
             },
-            cargarOportunidad (){
+            buscarRutaInicio(){
                 let me=this;
                 me.BanderaAxios = true;
-                axios.post('./obtenerOportunidadesLista',{
-                    id: '1',
+                axios.post('./buscarRutaIniciada',{
+                    id: 1,
                 })
                 .then(function (response) {
                     // handle success             
-                 me.BanderaAxios = false;                 
-                me.opportunities = response.data                   
+                 me.BanderaAxios = false;
+                 me.idRuta = response.data;  
+                 me.buscarRuta();                               
                 })
                 .catch(function (error) {
                     me.BanderaAxios = false;
                     console.log(error);              
                 });
+            },
+            buscarRuta(){
+                let me=this;               
+                me.BanderaAxios = true;
+                axios.post('./obtenerRuta',{
+                    id_ruta: me.idRuta.numero_ruta,
+                })
+                .then(function (response) {
+                    // handle success
+                    me.opportunities = response.data.registro_gps;             
+                    me.BanderaAxios = false;
+                    me.registro_rutas = response.data.registro_rutas
+                    me.origen = response.data.origen
+                    me.destino = response.data.destino
+
+                    var origenG_Parts = me.origen.split(",")
+                    me.coords = {
+                    lat: parseFloat(origenG_Parts[0]),
+                    lng: parseFloat(origenG_Parts[1])
+                    }
+
+                    var destinoG_Parts = me.destino.split(",")
+                    me.destination = {
+                    lat: parseFloat(destinoG_Parts[0]),
+                    lng: parseFloat(destinoG_Parts[1])
+                    }
+                    
+                    me.formarRuta1();
+
+                })
+                .catch(function (error) {
+                    me.BanderaAxios = false;
+                    console.log(error);              
+                });
+            },
+            formarRuta1 () {
+                this.$gmapApiPromiseLazy().then(() => { var bounds = new google.maps.LatLngBounds() /* etc */ 
+                var directionsService = new google.maps.DirectionsService()
+                var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true})
+
+                this.map = new google.maps.Map(document.getElementById('mapa1'), {
+                    center: this.destinationG,
+                    scrollwheel: false,
+                    zoom: 15,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                    })
+                    console.log('llego aqui al mapa manual');
+                directionsDisplay.setMap(this.map)
+
+                //google maps API's direction service
+                function calculateAndDisplayRoute(directionsService, directionsDisplay, start, destination,waypoints) {
+                directionsService.route({
+                    origin: start,
+                    destination: destination,
+                    waypoints: waypoints,
+                    travelMode: 'DRIVING'
+                }, function(response, status) {
+                    if (status === 'OK') {
+                    console.log(response)            
+                    directionsDisplay.setDirections(response)                               
+                    } else {
+                    
+                    }
+                });
+                }
+
+                 function ponerMarcadores(infoRuta,map){
+                   const infoWindow = new google.maps.InfoWindow();
+                     for (let i = 0; i < infoRuta.length; i++) {
+                        const ruta = infoRuta[i];
+                    
+                        if(ruta.bandera_encuesta == 1){
+                            const marker = new google.maps.Marker({
+                            position: { lat: parseFloat(ruta.latitud), lng: parseFloat(ruta.longitud)},
+                            map: map,
+                            title: ruta.nombre,
+                            label: {text: ruta.orden_ruta, color: "black"},
+                            icon: {
+                            url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                            }
+                            });
+                            //agregar click listener
+                            marker.addListener("click", () => {
+                            infoWindow.close();
+                            infoWindow.setContent(marker.getTitle());
+                            infoWindow.open(marker.getMap(), marker);
+                            });
+                        }else{
+                            const marker = new google.maps.Marker({
+                            position: { lat: parseFloat(ruta.latitud), lng: parseFloat(ruta.longitud)},
+                            map: map,
+                            title: ruta.nombre,
+                            label: {text: ruta.orden_ruta, color: "white"},
+                            });
+                            //agregar click listener
+                            marker.addListener("click", () => {
+                            infoWindow.close();
+                            infoWindow.setContent(marker.getTitle());
+                            infoWindow.open(marker.getMap(), marker);
+                            });
+                        }
+                    }
+                 }
+                
+                console.log(this.coords)
+                console.log(this.destination)
+                console.log(this.registro_rutas)
+                console.log('hmmm yha')
+                calculateAndDisplayRoute(directionsService, directionsDisplay, this.coords, this.destination,this.registro_rutas)
+                ponerMarcadores(this.opportunities,this.map) 
+                })
             },
             obtenerFormulario(datos){
                 let me= this;
@@ -183,12 +306,36 @@
                 me.bandera_encuesta=true;
                 me.oportunidadSelect = datos
             },
+            obtenerDetalleEncuesta(datos){
+                let me= this;
+                me.ocultar_tabla=true;
+                me.bandera_detalle_encuesta=true;
+                me.oportunidadSelect = datos
+            },
             volverFormulario(){
                  let me= this;
                  me.ocultar_tabla=false;
                 me.bandera_convertir=false;
                 me.bandera_encuesta=false;
-                me.cargarOportunidad()
+                me.bandera_detalle_encuesta = false;
+                me.buscarRuta()
+            },
+            pausarRuta(){
+                let me= this;
+                me.BanderaAxios = true;
+                axios.post('./pausarRuta',{
+                    id_ruta: me.idRuta.id,
+                })
+                .then(function (response) {
+                    // handle success            
+                    me.BanderaAxios = false;
+                    me.$emit('Volver','ok');
+                })
+                .catch(function (error) {
+                    me.BanderaAxios = false;
+                    console.log(error);              
+                });
+                
             }
         }
     }

@@ -164,7 +164,7 @@
   <div class="content-datos">
     <table class="tabla-3">
       <tr>
-        <th colspan="4" style="background-color: rgb(17, 1, 233); color:#ffff; text-aling: center;"><h2><strong><center>Orden de compra IUSA</center></strong></h2></th>
+        <th colspan="4" style="background-color: rgb(17, 1, 233); color:#ffff; text-aling: center;"><h2><strong><center>Orden de compra para Distribuidor</center></strong></h2></th>
       </tr>
       <tr>      
           <th>
@@ -255,11 +255,12 @@
         
 	</tr>
    @endforeach
-
+  <br>
   <tr>
     <td colspan="3" style="background-color : #dddddd;"></td>
     <td style="background-color : #dddddd;">TOTAL</td>
   </tr>
+  <br>
   <tr>
     <td colspan="4" style="text-align: left;">
       <ul>

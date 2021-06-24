@@ -3,7 +3,7 @@
   <vue-simple-suggest
     v-model="chosen"
     :list="listaOportunidad"
-    value-attribute="id_pgc"
+    value-attribute="id"
     display-attribute="nombre"
     @select="onSuggestSelect"
     :filter-by-query="true">
@@ -37,7 +37,7 @@
       cargarDistribuidor (){
           let me=this;
          
-          axios.post('./obtenerProspectosPGC',{
+          axios.post('./obtenerProspectos',{
               id: '1',
           })
           .then(function (response) {

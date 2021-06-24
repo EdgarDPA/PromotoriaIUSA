@@ -18,10 +18,12 @@ class ProspectoController extends Controller
     }
 
     public function obtenerProspecto(Request $request){
-        $prospectos = Prospecto::where('id_promotor',1)->get();
-        //dd($prospectos);
+        //$prospectos = Prospecto::where('id_promotor',1)->get();
+        $prospectos = Oportunidad_Piloto::all()->where('id_promotor',1)->where('bandera_prospecto',1); 
+        $prospectos_query = $prospectos->values();
+        $prospectos_query->all();
         return response()->json(
-            $prospectos
+            $prospectos_query
               );
     }
 

@@ -32,6 +32,8 @@ class Oportunidad_Piloto extends Model
         'orden_ruta',
         'bandera_prospecto',
         'bandera_encuesta',
+        'bandera_cancelada',
+        'motivo_cancelacion',
         'id_promotor'
     ];
 }

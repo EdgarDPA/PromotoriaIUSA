@@ -10,6 +10,7 @@ use App\Encuesta;
 
 use App\Oportunidad_Piloto;
 
+use DB;
 class EncuestaController extends Controller
 {
     /**
@@ -43,6 +44,10 @@ class EncuestaController extends Controller
     {
         //dd($request);
         //guardar distribuidores
+        date_default_timezone_set('America/Mexico_City');
+        $fechaactual= date("Y-m-d");
+        $horaactual= date("H:i:s");
+
         $listaD = $request->distribuidores;
         foreach($listaD as $infoLista){
           $nuevo_distribuidor = new Distribuidores();
@@ -70,12 +75,15 @@ class EncuestaController extends Controller
         $nueva_encuesta->pregunta8 = $request->pregunta8;
         $nueva_encuesta->pregunta9 = $request->pregunta9;
         $nueva_encuesta->pregunta10 = $request->pregunta10;
+        $nueva_encuesta->fecha = $fechaactual;
+        $nueva_encuesta->hora = $horaactual;
         $nueva_encuesta->id_oportunidad = $request->idOportunidad;
         $nueva_encuesta->save();
 
         //actualizar estado de encuesta
         $actualizar_oportunidad = Oportunidad_Piloto::find($request->idOportunidad);
         $actualizar_oportunidad->bandera_encuesta = 1;
+        $actualizar_oportunidad->bandera_prospecto = 1;
         $actualizar_oportunidad->save();
 
         return 'guardado exitoso';
@@ -87,9 +95,15 @@ class EncuestaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        $id_oportunidad = $request->id;
+        $respuesta_encuesta = DB::connection()->select("SELECT * FROM encuesta WHERE id_oportunidad like '$id_oportunidad'");
+        $distribuidores_lista = DB::connection()->select("SELECT * FROM distribuidores WHERE id_oportunidad like '$id_oportunidad' ORDER BY tipo ASC");
+        $datos = ['respuestas' => $respuesta_encuesta[0],'distribuidores' => $distribuidores_lista];
+        return response()->json(
+            $datos
+            );
     }
 
     /**

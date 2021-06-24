@@ -63,6 +63,8 @@ Route::post('obtenerCatalogoPGC', 'PedidoController@CatalogoProductos');
 
 Route::post('guardarNuevoProspecto', 'OpportunityController@nuevoProspecto');
 
+Route::post('darBajaOportunidad', 'OpportunityController@oportunidadCancelada');
+
 Route::post('buscarDistribuidores', 'PedidoController@buscarDistribuidores');
 
 Route::post('cargarCorreoDistribuidor', 'OrderManagementController@obtenerInfoDistribuidor');
@@ -79,4 +81,34 @@ Route::get('gestorProspectos', 'ProspectoController@index');
 
 Route::post('obtenerProspectos', 'ProspectoController@obtenerProspecto');
 
+Route::post('obtenerResultadosEncuesta', 'EncuestaController@show');
+
+/**
+ * Inicio y bitacora de Rutas
+ */
+Route::post('buscarRutaIniciada', 'RutasController@buscarRutaIniciada');
+Route::post('iniciarRuta', 'RutasController@iniciarRuta');
+Route::post('pausarRuta', 'RutasController@pausarRuta');
 });
+
+/*-----------------------------------------------------
+---------  Rutas de agenda para vendedor PGC ---------*/
+Route::get('obtenerFecha_actual', 'AgendaVendedorController@fecha_actual');
+
+Route::post('agendaNuevaCita', 'AgendaVendedorController@GuardarCita');
+Route::post('agendaConcentradoCita', 'AgendaVendedorController@ConcentradoCita');
+Route::post('agendaBorrarCita', 'AgendaVendedorController@BorrarCita');
+
+Route::post('obtenerEvidenciaCita', 'AgendaVendedorController@obtenerEvidenciaCita');
+
+Route::post('agendaActivarCheckIn', 'AgendaVendedorController@ActivarCheckIn');
+
+Route::post('agendaConcentradoCheckIn', 'AgendaVendedorController@ConcentradoCheckIn');
+
+Route::post('agendaActivarCheckOut', 'AgendaVendedorController@ActivarCheckOut');
+
+Route::post('agendaActivarFinalizo', 'AgendaVendedorController@ActivarFinalizarTarea');
+
+Route::post('agendaContadorCitasDiaHoy', 'AgendaVendedorController@ContadorCitasDiaHoy');
+
+Route::post('agendaContadorCitasPendientes', 'AgendaVendedorController@ContadorCitasPendientes');

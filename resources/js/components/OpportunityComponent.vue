@@ -22,7 +22,7 @@
                                 <td class="text-center" data-toggle="tooltip" data-placement="left" title="Mapa"><a class="btn btn-danger waves-effect" data-toggle="modal" data-target="#exampleModal" @click="GMaps(opportunity.latitud, opportunity.longitud, opportunity.nombre, opportunity.direccion)"><i class="fa fa-map-marker" style="color:#fff;font-size:18px;"></i></a></td>
                                 <td class="text-center" data-toggle="tooltip" data-placement="left" title="Encuesta" v-show="opportunity.bandera_encuesta != 1"><a class="btn btn-success waves-effect" @click="obtenerEncuesta(opportunity)" ><i class="fa fa-check-circle" style="color:#fff;font-size:18px;"></i></a></td>
                                 <td class="text-center" data-toggle="tooltip" data-placement="left" title="Ver Distriuidores" v-show="opportunity.bandera_encuesta == 1"><a class="btn waves-effect" style="background:#ff5f3d;" ><i class="fa fa-search" style="color:#fff;font-size:18px;"></i></a></td>
-                                <td class="text-center" data-toggle="tooltip" data-placement="left" title="Convertir Prospecto" ><a class="btn btn-warning waves-effect" @click="obtenerFormulario(opportunity)"><i class="fa fa-hand-peace-o" style="color:#fff;font-size:18px;"></i></a></td>
+                                
                                 <td class="text-center" data-toggle="tooltip" data-placement="left" title="Archivos" ><a href="files_upload" class="btn btn-primary waves-effect"><i class="fa fa-file-import"></i></a></td>                                
                             </tr>
                         </tbody>
